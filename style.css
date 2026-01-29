@@ -379,20 +379,18 @@
     .timeline-number {
         margin: 0 20px 0 0;
         min-width: 50px;
-        z-index: 5;
-        background-color: var(--white);
+        z-index: 3;
     }
 
     /* Vertical Line (Connecting to next circle) */
     .timeline-item::before {
         content: '';
         position: absolute;
-        top: 75px;
-        /* Start exactly from the bottom of the 50px circle (25px padding + 50px height) */
+        top: 50px;
+        /* Start from center of circle (25px padding + 25px radius) */
         left: 25px;
         width: 2px;
-        height: calc(100% - 50px);
-        /* Reach to the top of the next circle approximate */
+        height: 100%;
         background: repeating-linear-gradient(to bottom, var(--primary-blue) 0, var(--primary-blue) 6px, transparent 6px, transparent 10px);
         z-index: 1;
         opacity: 0.5;
@@ -720,7 +718,7 @@ img {
     font-size: 3.5rem;
     font-weight: 800;
     margin-bottom: 20px;
-    line-height: 1.1;
+    line-height: 0.7;
 }
 
 .title-top {
@@ -731,6 +729,7 @@ img {
     color: var(--accent-gold);
     display: inline-block;
     white-space: nowrap;
+    margin-top: -100px;
 }
 
 .hero-subtitle {
@@ -1380,8 +1379,8 @@ img {
     }
 
     .hero-title {
-        font-size: 1.4rem;
-        /* Reduced to ensure the long line fits on all mobile screens */
+        font-size: 1.7rem;
+        /* Increased for better visibility */
         line-height: 1.0;
         /* Tightened gap */
     }
@@ -1396,10 +1395,11 @@ img {
     }
 
     .hero-title .highlight {
-        font-size: 1.4rem;
+        font-size: 1.7rem;
         /* Matched size */
         display: block;
-        margin-top: -20px;
+        margin-top: -10px;
+        /* Adjusted for larger font */
     }
 
     /* Adjust Dropdown for Mobile */
