@@ -276,7 +276,7 @@
 .tooltip-header {
     font-size: 0.75rem;
     font-weight: 700;
-    color: #9CA3AF;
+    color: var(--primary-red);
     text-transform: uppercase;
     margin-bottom: 4px;
     letter-spacing: 0.5px;
@@ -379,18 +379,20 @@
     .timeline-number {
         margin: 0 20px 0 0;
         min-width: 50px;
-        z-index: 3;
+        z-index: 5;
+        background-color: var(--white);
     }
 
     /* Vertical Line (Connecting to next circle) */
     .timeline-item::before {
         content: '';
         position: absolute;
-        top: 50px;
-        /* Start from center of circle (25px padding + 25px radius) */
+        top: 75px;
+        /* Start exactly from the bottom of the 50px circle (25px padding + 50px height) */
         left: 25px;
         width: 2px;
-        height: 100%;
+        height: calc(100% - 50px);
+        /* Reach to the top of the next circle approximate */
         background: repeating-linear-gradient(to bottom, var(--primary-blue) 0, var(--primary-blue) 6px, transparent 6px, transparent 10px);
         z-index: 1;
         opacity: 0.5;
