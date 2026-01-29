@@ -1127,10 +1127,11 @@ img {
     }
 
     .stats-main {
-        font-size: 1.4rem;
+        font-size: 1.1rem;
         line-height: 1.2;
         font-weight: 900;
         letter-spacing: -0.02em;
+        white-space: nowrap;
     }
 
     .stats-sub {

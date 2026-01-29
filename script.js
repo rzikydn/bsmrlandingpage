@@ -2,42 +2,80 @@
 const mobileMenu = document.getElementById('mobile-menu');
 const navMenu = document.querySelector('.nav-menu');
 
-mobileMenu.addEventListener('click', () => {
-    mobileMenu.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
+if (mobileMenu && navMenu) {
+    mobileMenu.addEventListener('click', () => {
+        mobileMenu.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    });
 
-// Close menu when a link is clicked
-document.querySelectorAll('.nav-links').forEach(n => n.addEventListener('click', () => {
-    mobileMenu.classList.remove('active');
-    navMenu.classList.remove('active');
-}));
+    // Close menu when a link is clicked
+    document.querySelectorAll('.nav-links').forEach(n => n.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        navMenu.classList.remove('active');
+    }));
+}
 
-// Smooth Scrolling for Anchor Links (using Lenis)
+// Check if device is mobile/touch
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+// Initialize Lenis for Smooth Scrolling (Only for Desktop)
+let lenis;
+if (!isTouchDevice) {
+    lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical',
+        gestureDirection: 'vertical',
+        smooth: true,
+        mouseMultiplier: 1,
+        smoothTouch: false,
+        touchMultiplier: 2,
+    });
+
+    function raf(time) {
+        if (lenis) lenis.raf(time);
+        requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+}
+
+// Smooth Scrolling for Anchor Links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
-
         const targetId = this.getAttribute('href');
         if (targetId === '#') return;
 
-        // Use Lenis for smooth scroll
-        // offset: -80 accounts for the fixed header
-        lenis.scrollTo(targetId, { offset: -80 });
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+            const offset = 80; // Fixed header offset
+            if (lenis && !isTouchDevice) {
+                lenis.scrollTo(targetId, { offset: -offset });
+            } else {
+                // Native smooth scroll for mobile
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        }
     });
 });
 
-// Navbar Scroll Effect (Optional: Add shadow on scroll)
+// Navbar Scroll Effect
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-        navbar.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
-    } else {
-        navbar.style.boxShadow = "0 2px 10px rgba(0,0,0,0.05)";
+    if (navbar) {
+        if (window.scrollY > 50) {
+            navbar.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
+        } else {
+            navbar.style.boxShadow = "0 2px 10px rgba(0,0,0,0.05)";
+        }
     }
 });
 
-// Read More Toggle
+// Read More Toggle (About)
 const readMoreBtn = document.getElementById('readMoreBtn');
 const aboutDescription = document.querySelector('.about-description');
 
@@ -46,9 +84,7 @@ if (readMoreBtn && aboutDescription) {
         aboutDescription.classList.toggle('expanded');
         readMoreBtn.classList.toggle('active');
 
-        // Get the icon element
         const icon = readMoreBtn.querySelector('i');
-
         if (aboutDescription.classList.contains('expanded')) {
             readMoreBtn.childNodes[0].textContent = 'Tutup ';
             icon.className = 'fas fa-chevron-up';
@@ -56,6 +92,11 @@ if (readMoreBtn && aboutDescription) {
             readMoreBtn.childNodes[0].textContent = 'Baca Selengkapnya ';
             icon.className = 'fas fa-chevron-down';
         }
+
+        // CRITICAL: Refresh ScrollTrigger because page height changed
+        setTimeout(() => {
+            ScrollTrigger.refresh();
+        }, 100);
     });
 }
 
@@ -68,9 +109,7 @@ if (readMoreProgramBtn && programHiddenText) {
         programHiddenText.classList.toggle('expanded');
         readMoreProgramBtn.classList.toggle('active');
 
-        // Get the icon element
         const icon = readMoreProgramBtn.querySelector('i');
-
         if (programHiddenText.classList.contains('expanded')) {
             readMoreProgramBtn.childNodes[0].textContent = 'Tutup ';
             icon.className = 'fas fa-chevron-up';
@@ -78,50 +117,33 @@ if (readMoreProgramBtn && programHiddenText) {
             readMoreProgramBtn.childNodes[0].textContent = 'Baca Selengkapnya ';
             icon.className = 'fas fa-chevron-down';
         }
+
+        // CRITICAL: Refresh ScrollTrigger because page height changed
+        setTimeout(() => {
+            ScrollTrigger.refresh();
+        }, 100);
     });
 }
 
-// Initialize Lenis for Smooth Scrolling
-const lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    direction: 'vertical',
-    gestureDirection: 'vertical',
-    smooth: true,
-    mouseMultiplier: 1,
-    smoothTouch: false,
-    touchMultiplier: 2,
-});
-
-lenis.on('scroll', ScrollTrigger.update);
-
-function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-}
-
-requestAnimationFrame(raf);
-
-// Register GSAP Plugin
+// GSAP Configuration
 gsap.registerPlugin(ScrollTrigger);
+
+// Update ScrollTrigger on Lenis scroll
+if (lenis) {
+    lenis.on('scroll', ScrollTrigger.update);
+}
 
 // Initialize when the DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     initScrollReveal();
     initCountUp();
 
-    // Refresh ScrollTrigger to account for DOM changes (splitting text)
-    setTimeout(() => {
+    // Refresh everything after initial load
+    window.addEventListener('load', () => {
         ScrollTrigger.refresh();
-    }, 100);
+    });
 });
 
-
-
-/**
- * ScrollReveal Animation logic from React Bits
- * Now handles all text reveal animations on the page
- */
 function initCountUp() {
     const counts = document.querySelectorAll('.count-up');
     counts.forEach(counter => {
@@ -129,19 +151,8 @@ function initCountUp() {
 
         ScrollTrigger.create({
             trigger: counter,
-            start: 'top 90%',
+            start: 'top 95%',
             onEnter: () => {
-                gsap.fromTo(counter,
-                    { innerText: 0 },
-                    {
-                        innerText: target,
-                        duration: 2,
-                        snap: { innerText: 1 },
-                        ease: 'power2.out'
-                    }
-                );
-            },
-            onEnterBack: () => {
                 gsap.fromTo(counter,
                     { innerText: 0 },
                     {
@@ -158,24 +169,10 @@ function initCountUp() {
 
 function initScrollReveal() {
     const targets = [
-        // Paragraphs
-        {
-            selector: '.program-info .info-content > p:first-of-type',
-            options: { baseRotation: 2, blurStrength: 3 }
-        },
-        {
-            selector: '.program-info .desktop-only-text',
-            options: { baseRotation: 2, blurStrength: 3 }
-        },
-        {
-            selector: '.about-description > p:first-of-type',
-            options: { baseRotation: 2, blurStrength: 3 }
-        },
-        {
-            selector: '.registration .section-subtitle',
-            options: { baseRotation: 2, blurStrength: 3 }
-        },
-        // Headers & Section Tags (Previously ScrollFloat)
+        { selector: '.program-info .info-content > p:first-of-type', options: { baseRotation: 2, blurStrength: 3 } },
+        { selector: '.program-info .desktop-only-text', options: { baseRotation: 2, blurStrength: 3 } },
+        { selector: '.about-description > p:first-of-type', options: { baseRotation: 2, blurStrength: 3 } },
+        { selector: '.registration .section-subtitle', options: { baseRotation: 2, blurStrength: 3 } },
         { selector: '.program-info .section-title', options: { baseRotation: 3, blurStrength: 4 } },
         { selector: '.about .section-tag', options: { baseRotation: 3, blurStrength: 4 } },
         { selector: '.about .section-title', options: { baseRotation: 3, blurStrength: 4 } },
@@ -210,18 +207,13 @@ function initScrollReveal() {
 
             const originalText = el.textContent.trim();
             el.classList.add('scroll-reveal');
-
             el.innerHTML = `<span class="scroll-reveal-text"></span>`;
             const textSpan = el.querySelector('.scroll-reveal-text');
 
-            // Split text into words (including punctuation)
             const words = originalText.split(/(\s+)/).map(word => {
-                if (word.match(/^\s+$/)) {
-                    return document.createTextNode(word);
-                }
+                if (word.match(/^\s+$/)) return document.createTextNode(word);
                 const span = document.createElement('span');
                 span.className = 'word';
-                // Set initial state directly
                 span.style.opacity = baseOpacity;
                 if (enableBlur) span.style.filter = `blur(${blurStrength}px)`;
                 span.textContent = word;
@@ -229,41 +221,21 @@ function initScrollReveal() {
             });
 
             words.forEach(node => textSpan.appendChild(node));
-
             const wordElements = el.querySelectorAll('.word');
 
-            // Use a Timeline for better control and sync
-            const tl = gsap.timeline({
+            gsap.timeline({
                 scrollTrigger: {
                     trigger: el,
                     start: options.start || 'top 90%',
                     end: options.end || 'top 30%',
                     scrub: true,
                 }
-            });
-
-            // Container Rotation
-            tl.fromTo(el,
-                { transformOrigin: '0% 50%', rotate: baseRotation },
-                { rotate: 0, ease: 'none' },
-                0
-            );
-
-            // Words Opacity and Blur
-            tl.fromTo(wordElements,
-                {
-                    opacity: baseOpacity,
-                    filter: enableBlur ? `blur(${blurStrength}px)` : 'none',
-                    willChange: 'opacity, filter'
-                },
-                {
-                    opacity: 1,
-                    filter: 'blur(0px)',
-                    stagger: 0.1,
-                    ease: 'none'
-                },
-                0
-            );
+            })
+                .fromTo(el, { transformOrigin: '0% 50%', rotate: baseRotation }, { rotate: 0, ease: 'none' }, 0)
+                .fromTo(wordElements,
+                    { opacity: baseOpacity, filter: enableBlur ? `blur(${blurStrength}px)` : 'none' },
+                    { opacity: 1, filter: 'blur(0px)', stagger: 0.1, ease: 'none' }, 0
+                );
         });
     });
 }
