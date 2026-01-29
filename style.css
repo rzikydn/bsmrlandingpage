@@ -1392,6 +1392,7 @@ img {
         /* Small consistent gap */
         margin-top: 0;
         /* Removed extra top space */
+        transform: translateX(-6px);
     }
 
     .hero-title .highlight {
