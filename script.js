@@ -135,38 +135,176 @@ if (lenis) {
 
 // Initialize when the DOM is ready
 
-// Scroll Stack Component Initialization (Revised for Smoothness)
+// Scroll Stack Component Initialization
 function initScrollStack() {
+    const scroller = document.querySelector('.scroll-stack-scroller');
+    const inner = document.querySelector('.scroll-stack-inner');
     const cards = document.querySelectorAll('.scroll-stack-card');
-    if (cards.length === 0 || window.innerWidth > 768) return;
+    const endElement = document.querySelector('.scroll-stack-end');
 
-    cards.forEach((card, i) => {
-        // 1. Set individual sticky offsets for stacking appearance
-        card.style.top = (80 + i * 20) + "px";
-        card.style.zIndex = i + 1;
+    if (!scroller || !inner || cards.length === 0) return;
 
-        // 2. Animate the current card as the NEXT card approaches
-        if (i < cards.length - 1) {
-            const nextCard = cards[i + 1];
+    // Configuration from React Bits component
+    const config = {
+        itemDistance: 100,
+        itemScale: 0.03,
+        itemStackDistance: 30,
+        stackPosition: '15%', // Adjusted for mobile header
+        scaleEndPosition: '5%',
+        baseScale: 0.85,
+        rotationAmount: 0,
+        blurAmount: 2,
+    };
 
-            gsap.to(card, {
-                scrollTrigger: {
-                    trigger: nextCard,
-                    start: "top 85%", // Start scaling down when next card is near
-                    end: "top 25%",   // Final scale when next card has almost overlapped
-                    scrub: true,
-                    invalidateOnRefresh: true
-                },
-                scale: 0.92,
-                opacity: 0.7,
-                filter: "blur(4px)",
-                ease: "power1.inOut"
+    const lastTransforms = new Map();
+
+    function parsePercentage(value, containerHeight) {
+        if (typeof value === 'string' && value.includes('%')) {
+            return (parseFloat(value) / 100) * containerHeight;
+        }
+        return parseFloat(value);
+    }
+
+    function calculateProgress(scrollTop, start, end) {
+        if (scrollTop < start) return 0;
+        if (scrollTop > end) return 1;
+        return (scrollTop - start) / (end - start);
+    }
+
+    function getElementOffset(element) {
+        const rect = element.getBoundingClientRect();
+        return rect.top + window.scrollY;
+    }
+
+    // Cache viewport height to prevent jumps on iOS address bar resize
+    let cachedViewportHeight = window.innerHeight;
+
+    // Cache card offsets to avoid layout thrashing
+    let cardOffsets = Array.from(cards).map(card => getElementOffset(card));
+
+    function updateCardTransforms() {
+        if (window.innerWidth > 768) {
+            cards.forEach(card => {
+                card.style.transform = '';
+                card.style.filter = '';
             });
+            return;
+        }
+
+        // Clamp scroll top to positive values to avoid bounce glitches
+        const scrollTop = Math.max(0, window.scrollY);
+        const containerHeight = cachedViewportHeight;
+        const stackPositionPx = parsePercentage(config.stackPosition, containerHeight);
+        const scaleEndPositionPx = parsePercentage(config.scaleEndPosition, containerHeight);
+        const endElementTop = endElement ? getElementOffset(endElement) : 0;
+
+        cards.forEach((card, i) => {
+            const cardTop = cardOffsets[i];
+
+            const triggerStart = cardTop - stackPositionPx - config.itemStackDistance * i;
+            const triggerEnd = cardTop - scaleEndPositionPx;
+            const pinStart = cardTop - stackPositionPx - config.itemStackDistance * i;
+            const pinEnd = endElementTop - containerHeight / 2;
+
+            const scaleProgress = calculateProgress(scrollTop, triggerStart, triggerEnd);
+            const targetScale = config.baseScale + i * config.itemScale;
+            const scale = 1 - scaleProgress * (1 - targetScale);
+            const rotation = config.rotationAmount ? i * config.rotationAmount * scaleProgress : 0;
+
+            let blur = 0;
+            if (config.blurAmount) {
+                let topCardIndex = 0;
+                for (let j = 0; j < cards.length; j++) {
+                    const jCardTop = cardOffsets[j];
+                    const jTriggerStart = jCardTop - stackPositionPx - config.itemStackDistance * j;
+                    if (scrollTop >= jTriggerStart) {
+                        topCardIndex = j;
+                    }
+                }
+                if (i < topCardIndex) {
+                    const depthInStack = topCardIndex - i;
+                    blur = Math.max(0, depthInStack * config.blurAmount);
+                }
+            }
+
+            let translateY = 0;
+            const isPinned = scrollTop >= pinStart && scrollTop <= pinEnd;
+
+            if (isPinned) {
+                translateY = scrollTop - cardTop + stackPositionPx + config.itemStackDistance * i;
+            } else if (scrollTop > pinEnd) {
+                translateY = pinEnd - cardTop + stackPositionPx + config.itemStackDistance * i;
+            }
+
+            // High precision transforms for smoother rendering on high-DPI screens
+            const newTransform = {
+                translateY: Math.round(translateY * 1000) / 1000,
+                scale: Math.round(scale * 10000) / 10000,
+                rotation: Math.round(rotation * 1000) / 1000,
+                blur: Math.round(blur * 1000) / 1000
+            };
+
+            const lastTransform = lastTransforms.get(i);
+            // Smaller threshold for smoother catching of sub-pixel movements
+            const hasChanged = !lastTransform ||
+                Math.abs(lastTransform.translateY - newTransform.translateY) > 0.01 ||
+                Math.abs(lastTransform.scale - newTransform.scale) > 0.0001;
+
+            if (hasChanged) {
+                const transformValue = `translate3d(0, ${newTransform.translateY}px, 0) scale(${newTransform.scale}) rotate(${newTransform.rotation}deg)`;
+                const filterValue = (config.blurAmount && newTransform.blur > 0) ? `blur(${newTransform.blur}px)` : 'none';
+
+                card.style.transform = transformValue;
+                card.style.filter = filterValue;
+                lastTransforms.set(i, newTransform);
+            }
+        });
+    }
+
+    // Recalculate offsets and viewport only on actual resize (debounced/throttled)
+    window.addEventListener('resize', () => {
+        // Only update viewport if it changes significantly (more than address bar size)
+        if (Math.abs(window.innerHeight - cachedViewportHeight) > 100) {
+            cachedViewportHeight = window.innerHeight;
+        }
+
+        cardOffsets = Array.from(cards).map(card => {
+            const oldTransform = card.style.transform;
+            card.style.transform = '';
+            const offset = getElementOffset(card);
+            card.style.transform = oldTransform;
+            return offset;
+        });
+        updateCardTransforms();
+    });
+
+    // Set initial card styles
+    cards.forEach((card, i) => {
+        card.style.willChange = 'transform, filter';
+        card.style.transformOrigin = 'top center';
+        if (i < cards.length - 1) {
+            // Match the vertical gap
+            card.style.marginBottom = config.itemDistance + 'px';
         }
     });
 
-    // Refresh ScrollTrigger to account for sticky positions
-    ScrollTrigger.refresh();
+    // Listen to scroll with requestAnimationFrame for performance
+    let ticking = false;
+    function requestUpdate() {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                updateCardTransforms();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }
+
+    window.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('resize', requestUpdate, { passive: true });
+
+    // Initial call
+    updateCardTransforms();
 }
 
 // Update DOMContentLoaded to call initScrollStack
@@ -174,12 +312,18 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollReveal();
     initCountUp();
 
-    // Init Scroll Stack
-    initScrollStack();
+    // Only init Scroll Stack on mobile devices originally intended
+    if (window.innerWidth <= 768) {
+        initScrollStack();
+    }
 
     // Refresh everything after initial load
     window.addEventListener('load', () => {
         ScrollTrigger.refresh();
+        if (window.innerWidth <= 768) {
+            // Recalculate transforms after all assets load
+            window.dispatchEvent(new Event('scroll'));
+        }
     });
 });
 
