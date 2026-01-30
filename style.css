@@ -1689,7 +1689,8 @@ img {
 
     .service-card.scroll-stack-card {
         transform-origin: top center;
-        will-change: transform, filter;
+        will-change: transform;
+        /* Removed filter from will-change */
         backface-visibility: hidden;
         -webkit-backface-visibility: hidden;
         transform-style: preserve-3d;
@@ -1705,7 +1706,8 @@ img {
         background: var(--white);
         min-height: 400px;
         transition: none !important;
-        /* CRITICAL: Prevent CSS transition fighting with JS animation */
+        z-index: 1;
+        /* Baseline z-index */
     }
 
     .scroll-stack-end {

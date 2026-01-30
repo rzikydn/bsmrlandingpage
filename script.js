@@ -153,7 +153,7 @@ function initScrollStack() {
         scaleEndPosition: '5%',
         baseScale: 0.85,
         rotationAmount: 0,
-        blurAmount: 2,
+        blurAmount: 0, // DISABLED BLUR ON MOBILE: Extreme performance cost on iOS Safari
     };
 
     const lastTransforms = new Map();
@@ -211,22 +211,6 @@ function initScrollStack() {
             const scale = 1 - scaleProgress * (1 - targetScale);
             const rotation = config.rotationAmount ? i * config.rotationAmount * scaleProgress : 0;
 
-            let blur = 0;
-            if (config.blurAmount) {
-                let topCardIndex = 0;
-                for (let j = 0; j < cards.length; j++) {
-                    const jCardTop = cardOffsets[j];
-                    const jTriggerStart = jCardTop - stackPositionPx - config.itemStackDistance * j;
-                    if (scrollTop >= jTriggerStart) {
-                        topCardIndex = j;
-                    }
-                }
-                if (i < topCardIndex) {
-                    const depthInStack = topCardIndex - i;
-                    blur = Math.max(0, depthInStack * config.blurAmount);
-                }
-            }
-
             let translateY = 0;
             const isPinned = scrollTop >= pinStart && scrollTop <= pinEnd;
 
@@ -238,24 +222,20 @@ function initScrollStack() {
 
             // High precision transforms for smoother rendering on high-DPI screens
             const newTransform = {
-                translateY: Math.round(translateY * 1000) / 1000,
-                scale: Math.round(scale * 10000) / 10000,
-                rotation: Math.round(rotation * 1000) / 1000,
-                blur: Math.round(blur * 1000) / 1000
+                translateY: Math.round(translateY * 100) / 100,
+                scale: Math.round(scale * 1000) / 1000,
+                rotation: Math.round(rotation * 100) / 100,
+                zIndex: i + 10 // Explicit z-index for stacking stability
             };
 
             const lastTransform = lastTransforms.get(i);
-            // Smaller threshold for smoother catching of sub-pixel movements
             const hasChanged = !lastTransform ||
-                Math.abs(lastTransform.translateY - newTransform.translateY) > 0.01 ||
-                Math.abs(lastTransform.scale - newTransform.scale) > 0.0001;
+                Math.abs(lastTransform.translateY - newTransform.translateY) > 0.05 ||
+                Math.abs(lastTransform.scale - newTransform.scale) > 0.001;
 
             if (hasChanged) {
-                const transformValue = `translate3d(0, ${newTransform.translateY}px, 0) scale(${newTransform.scale}) rotate(${newTransform.rotation}deg)`;
-                const filterValue = (config.blurAmount && newTransform.blur > 0) ? `blur(${newTransform.blur}px)` : 'none';
-
-                card.style.transform = transformValue;
-                card.style.filter = filterValue;
+                card.style.transform = `translate3d(0, ${newTransform.translateY}px, 0) scale(${newTransform.scale}) rotate(${newTransform.rotation}deg)`;
+                card.style.zIndex = newTransform.zIndex;
                 lastTransforms.set(i, newTransform);
             }
         });
@@ -280,8 +260,9 @@ function initScrollStack() {
 
     // Set initial card styles
     cards.forEach((card, i) => {
-        card.style.willChange = 'transform, filter';
+        card.style.willChange = 'transform';
         card.style.transformOrigin = 'top center';
+        card.style.zIndex = i + 10;
         if (i < cards.length - 1) {
             // Match the vertical gap
             card.style.marginBottom = config.itemDistance + 'px';
