@@ -1658,6 +1658,14 @@ img {
     .cta-image {
         width: 100%;
     }
+
+    /* Align registration text with timeline circles on mobile */
+    .registration .section-header {
+        padding-left: 10px;
+        /* Shift slightly right */
+        text-align: left;
+        /* Ensure left alignment */
+    }
 }
 
 /* Scroll Stack Component (Mobile Only) */
