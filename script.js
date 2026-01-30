@@ -4,17 +4,39 @@ const navMenu = document.querySelector('.nav-menu');
 const menuOverlay = document.getElementById('menu-overlay');
 
 if (mobileMenu && navMenu) {
-    mobileMenu.addEventListener('click', () => {
+    mobileMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
         mobileMenu.classList.toggle('active');
         navMenu.classList.toggle('active');
         if (menuOverlay) menuOverlay.classList.toggle('active');
+        document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
     });
 
-    // Close menu when a link is clicked
-    document.querySelectorAll('.nav-links').forEach(n => n.addEventListener('click', () => {
+    // Handle mobile dropdowns
+    const dropdowns = document.querySelectorAll('.nav-item.dropdown > a');
+    dropdowns.forEach(dropdown => {
+        dropdown.addEventListener('click', (e) => {
+            if (window.innerWidth <= 1024) {
+                e.preventDefault();
+                e.stopPropagation();
+                const parent = dropdown.parentElement;
+
+                // Close other dropdowns
+                document.querySelectorAll('.nav-item.dropdown').forEach(item => {
+                    if (item !== parent) item.classList.remove('active');
+                });
+
+                parent.classList.toggle('active');
+            }
+        });
+    });
+
+    // Close menu when a link (that is not a dropdown toggle) is clicked
+    document.querySelectorAll('.nav-links:not(.nav-item.dropdown > a)').forEach(n => n.addEventListener('click', () => {
         mobileMenu.classList.remove('active');
         navMenu.classList.remove('active');
         if (menuOverlay) menuOverlay.classList.remove('active');
+        document.body.style.overflow = '';
     }));
 
     // Close menu when overlay is clicked
@@ -23,6 +45,9 @@ if (mobileMenu && navMenu) {
             mobileMenu.classList.remove('active');
             navMenu.classList.remove('active');
             menuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+            // Also close any open dropdowns
+            document.querySelectorAll('.nav-item.dropdown').forEach(item => item.classList.remove('active'));
         });
     }
 }

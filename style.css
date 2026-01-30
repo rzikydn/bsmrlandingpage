@@ -1361,15 +1361,15 @@ img {
         /* HEIGHT OF NAVBAR */
         height: calc(100vh - 80px);
         /* Fill remaining usage */
-        width: 60%;
-        /* Half screen width (approx) */
-        max-width: 300px;
-        /* Limit max width */
+        width: 85%;
+        /* Increased width for better readability */
+        max-width: 350px;
+        /* Increased max width */
         background-color: var(--white);
         flex-direction: column;
         justify-content: flex-start;
-        padding-top: 20px;
-        /* Reduced top padding since header is visible */
+        padding-top: 10px;
+        /* Reduced top padding */
         padding-left: 0;
         padding-right: 0;
         text-align: left;
@@ -1386,34 +1386,40 @@ img {
     }
 
     .nav-item {
-        margin: 10px 0;
+        margin: 5px 0;
+        /* Reduced margin */
         width: 100%;
         text-align: left;
     }
 
     .nav-item .nav-links {
         display: block;
-        padding: 15px 30px;
-        /* Clean padding */
+        padding: 12px 25px;
+        /* Reduced padding */
         border-radius: 0;
         margin: 0;
-        font-size: 1rem;
+        font-size: 0.95rem;
+        /* Slightly smaller font */
         color: var(--text-dark);
         font-weight: 500;
         border-bottom: none;
     }
 
     .nav-item .nav-links:hover,
+    .nav-item.active>.nav-links,
     .nav-item .nav-links.active {
         background-color: #f8f9fa;
         color: var(--primary-blue);
     }
 
     .nav-links.btn-nav {
-        margin: 20px 30px 0 30px;
-        /* Match side padding */
+        margin: 15px 25px 0 25px;
+        /* Adjusted margin */
         text-align: center;
-        width: auto;
+        width: calc(100% - 50px);
+        /* Full width minus side margins */
+        display: block;
+        box-sizing: border-box;
         border-radius: 8px !important;
     }
 
@@ -1443,23 +1449,35 @@ img {
     /* Ensure dropdowns work nicely in mobile menu mode */
     .dropdown-menu {
         position: static;
-        opacity: 1;
-        visibility: visible;
+        opacity: 0;
+        visibility: hidden;
+        max-height: 0;
         transform: none;
         box-shadow: none;
-        display: none;
+        display: block;
+        /* Change to block for max-height transition */
+        overflow: hidden;
         background-color: var(--bg-light);
         width: 100%;
         padding: 0;
+        transition: all 0.3s ease;
     }
 
-    .nav-item.dropdown:hover .dropdown-menu {
-        display: block;
+    .nav-item.dropdown.active .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        max-height: 500px;
+        /* Enough to show items */
+        padding: 5px 0;
+    }
+
+    .nav-item.dropdown.active>.nav-links i {
+        transform: rotate(180deg);
     }
 
     .dropdown-menu li a {
-        padding-left: 0;
-        /* Centered text doesn't need left padding */
+        padding: 8px 45px;
+        font-size: 0.88rem;
     }
 }
 
