@@ -1293,36 +1293,104 @@ img {
 /* Tablet Responsiveness (up to 1024px) */
 @media (max-width: 1024px) {
 
-    /* Navbar: Switch to Hamburger on Tablet */
+    /* Navbar: Switch to Hamburger on Tablet/Mobile */
     .menu-toggle {
         display: block;
         margin-right: 20px;
-        z-index: 1001;
-        /* Ensure above menu */
+        z-index: 1101;
+        /* Ensure above overlay and menu */
     }
 
+    /* Mobile Menu Overlay */
+    .menu-overlay {
+        position: fixed;
+        top: 80px;
+        /* Start below navbar */
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        /* Dimmed backdrop */
+        z-index: 1099;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        /* backdrop-filter: blur(2px); REMOVED as requested */
+    }
+
+    .menu-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Drawer Menu Style */
     .nav-menu {
         position: fixed;
-        left: -100%;
+        right: -100%;
+        /* Start off-screen right */
+        left: auto;
+        /* Unset left */
         top: 80px;
-        flex-direction: column;
+        /* HEIGHT OF NAVBAR */
+        height: calc(100vh - 80px);
+        /* Fill remaining usage */
+        width: 60%;
+        /* Half screen width (approx) */
+        max-width: 300px;
+        /* Limit max width */
         background-color: var(--white);
-        width: 100%;
-        text-align: center;
-        transition: 0.3s;
-        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
-        padding: 20px 0;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 20px;
+        /* Reduced top padding since header is visible */
+        padding-left: 0;
+        padding-right: 0;
+        text-align: left;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: -5px 0 10px rgba(0, 0, 0, 0.1);
+        /* Side shadow for drawer */
+        z-index: 1100;
+        overflow-y: auto;
     }
 
     .nav-menu.active {
-        left: 0;
+        right: 0;
+        /* Slide to right edge */
+        left: auto;
     }
 
     .nav-item {
-        margin: 15px 0;
+        margin: 10px 0;
+        width: 100%;
+        text-align: left;
     }
 
-    /* Hero Section: Fix alignment and margin */
+    .nav-item .nav-links {
+        display: block;
+        padding: 15px 30px;
+        /* Clean padding */
+        border-radius: 0;
+        margin: 0;
+        font-size: 1rem;
+        color: var(--text-dark);
+        font-weight: 500;
+        border-bottom: none;
+    }
+
+    .nav-item .nav-links:hover,
+    .nav-item .nav-links.active {
+        background-color: #f8f9fa;
+        color: var(--primary-blue);
+    }
+
+    .nav-links.btn-nav {
+        margin: 20px 30px 0 30px;
+        /* Match side padding */
+        text-align: center;
+        width: auto;
+        border-radius: 8px !important;
+    }
+
     .hero-content {
         margin-left: 0;
         margin-right: 0;
@@ -1374,34 +1442,13 @@ img {
 
     .menu-toggle {
         display: block;
-        margin-right: 15px;
         /* Shift Left */
         margin-top: 5px;
         /* Shift Down slightly */
+        margin-right: 20px;
     }
 
-    .nav-menu {
-        position: fixed;
-        left: -100%;
-        top: 80px;
-        flex-direction: column;
-        background-color: var(--white);
-        width: 100%;
-        text-align: center;
-        transition: 0.3s;
-        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
-        padding: 20px 0;
-    }
-
-    .nav-menu.active {
-        left: 0;
-    }
-
-    .nav-item {
-        margin: 15px 0;
-    }
-
-
+    /* Nav menu handled in tablet block */
 
     .footer-grid {
         grid-template-columns: 1fr;

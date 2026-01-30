@@ -1,18 +1,30 @@
 // Mobile Menu Toggle
 const mobileMenu = document.getElementById('mobile-menu');
 const navMenu = document.querySelector('.nav-menu');
+const menuOverlay = document.getElementById('menu-overlay');
 
 if (mobileMenu && navMenu) {
     mobileMenu.addEventListener('click', () => {
         mobileMenu.classList.toggle('active');
         navMenu.classList.toggle('active');
+        if (menuOverlay) menuOverlay.classList.toggle('active');
     });
 
     // Close menu when a link is clicked
     document.querySelectorAll('.nav-links').forEach(n => n.addEventListener('click', () => {
         mobileMenu.classList.remove('active');
         navMenu.classList.remove('active');
+        if (menuOverlay) menuOverlay.classList.remove('active');
     }));
+
+    // Close menu when overlay is clicked
+    if (menuOverlay) {
+        menuOverlay.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            navMenu.classList.remove('active');
+            menuOverlay.classList.remove('active');
+        });
+    }
 }
 
 // Check if device is mobile/touch
