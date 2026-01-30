@@ -1657,47 +1657,45 @@ img {
     }
 }
 
-/* Scroll Stack Component from React Bits */
-.scroll-stack-scroller {
-    position: relative;
-    width: 100%;
-}
-
-@media (max-width: 768px) {
+/* Scroll Stack Component (Mobile Only) */
+@media (max-width: 992px) {
     .services-grid {
-        display: block !important;
-        /* Disable grid for stack effect */
-    }
-
-    .scroll-stack-inner {
-        padding: 2vh 0 0;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
         position: relative;
+        padding-top: 5vh;
+        padding-bottom: 10vh;
+        /* Space to scroll past */
+        /* min-height: 150vh;  Make it tall enough to scroll through */
+        display: block;
+        /* Override grid behavior */
     }
 
-    .service-card.scroll-stack-card {
+    .service-card {
         transform-origin: top center;
         will-change: transform, filter;
         backface-visibility: hidden;
         transform-style: preserve-3d;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        width: 90% !important;
-        margin: 20px auto !important;
-        border-radius: 24px;
-        box-sizing: border-box;
+        width: 100%;
+        margin-bottom: 100px;
+        /* Space between cards in flow before stack takes over */
+        /* height: auto; */
+        min-height: 380px;
+        position: relative;
+        /* Improve mobile performance */
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
-        position: relative;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+        /* Enhance shadow for stacking depth */
+        /* Ensure background is opaque */
         background: var(--white);
-        min-height: 400px;
+        z-index: 1;
     }
 
     .scroll-stack-end {
         width: 100%;
-        height: 50vh;
-        /* Extra space to allow stacking of last card */
+        height: 1px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: -1;
     }
 }

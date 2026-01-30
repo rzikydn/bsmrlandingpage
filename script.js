@@ -134,163 +134,13 @@ if (lenis) {
 }
 
 // Initialize when the DOM is ready
-
-// Scroll Stack Component Initialization
-function initScrollStack() {
-    const scroller = document.querySelector('.scroll-stack-scroller');
-    const inner = document.querySelector('.scroll-stack-inner');
-    const cards = document.querySelectorAll('.scroll-stack-card');
-    const endElement = document.querySelector('.scroll-stack-end');
-
-    if (!scroller || !inner || cards.length === 0) return;
-
-    // Configuration from React Bits component
-    const config = {
-        itemDistance: 100,
-        itemScale: 0.03,
-        itemStackDistance: 30,
-        stackPosition: '15%', // Adjusted for mobile header
-        scaleEndPosition: '5%',
-        baseScale: 0.85,
-        rotationAmount: 0,
-        blurAmount: 2,
-    };
-
-    const lastTransforms = new Map();
-
-    function parsePercentage(value, containerHeight) {
-        if (typeof value === 'string' && value.includes('%')) {
-            return (parseFloat(value) / 100) * containerHeight;
-        }
-        return parseFloat(value);
-    }
-
-    function calculateProgress(scrollTop, start, end) {
-        if (scrollTop < start) return 0;
-        if (scrollTop > end) return 1;
-        return (scrollTop - start) / (end - start);
-    }
-
-    function getElementOffset(element) {
-        const rect = element.getBoundingClientRect();
-        return rect.top + window.scrollY;
-    }
-
-    function updateCardTransforms() {
-        if (window.innerWidth > 768) {
-            // Reset transforms if resized to desktop
-            cards.forEach(card => {
-                card.style.transform = '';
-                card.style.filter = '';
-            });
-            return;
-        }
-
-        const scrollTop = window.scrollY;
-        const containerHeight = window.innerHeight;
-        const stackPositionPx = parsePercentage(config.stackPosition, containerHeight);
-        const scaleEndPositionPx = parsePercentage(config.scaleEndPosition, containerHeight);
-        const endElementTop = endElement ? getElementOffset(endElement) : 0;
-
-        cards.forEach((card, i) => {
-            const cardTop = getElementOffset(card);
-
-            // Logic from provided React component
-            const triggerStart = cardTop - stackPositionPx - config.itemStackDistance * i;
-            const triggerEnd = cardTop - scaleEndPositionPx;
-            const pinStart = cardTop - stackPositionPx - config.itemStackDistance * i;
-            const pinEnd = endElementTop - containerHeight / 2;
-
-            const scaleProgress = calculateProgress(scrollTop, triggerStart, triggerEnd);
-            const targetScale = config.baseScale + i * config.itemScale;
-            const scale = 1 - scaleProgress * (1 - targetScale);
-            const rotation = config.rotationAmount ? i * config.rotationAmount * scaleProgress : 0;
-
-            let blur = 0;
-            if (config.blurAmount) {
-                let topCardIndex = 0;
-                for (let j = 0; j < cards.length; j++) {
-                    const jCardTop = getElementOffset(cards[j]);
-                    const jTriggerStart = jCardTop - stackPositionPx - config.itemStackDistance * j;
-                    if (scrollTop >= jTriggerStart) {
-                        topCardIndex = j;
-                    }
-                }
-                if (i < topCardIndex) {
-                    const depthInStack = topCardIndex - i;
-                    blur = Math.max(0, depthInStack * config.blurAmount);
-                }
-            }
-
-            let translateY = 0;
-            const isPinned = scrollTop >= pinStart && scrollTop <= pinEnd;
-
-            if (isPinned) {
-                translateY = scrollTop - cardTop + stackPositionPx + config.itemStackDistance * i;
-            } else if (scrollTop > pinEnd) {
-                translateY = pinEnd - cardTop + stackPositionPx + config.itemStackDistance * i;
-            }
-
-            const newTransform = {
-                translateY: Math.round(translateY * 100) / 100,
-                scale: Math.round(scale * 1000) / 1000,
-                rotation: Math.round(rotation * 100) / 100,
-                blur: Math.round(blur * 100) / 100
-            };
-
-            const lastTransform = lastTransforms.get(i);
-            const hasChanged = !lastTransform ||
-                Math.abs(lastTransform.translateY - newTransform.translateY) > 0.1 ||
-                Math.abs(lastTransform.scale - newTransform.scale) > 0.001 ||
-                Math.abs(lastTransform.rotation - newTransform.rotation) > 0.1 ||
-                Math.abs(lastTransform.blur - newTransform.blur) > 0.1;
-
-            if (hasChanged) {
-                const transformValue = `translate3d(0, ${newTransform.translateY}px, 0) scale(${newTransform.scale}) rotate(${newTransform.rotation}deg)`;
-                const filterValue = newTransform.blur > 0 ? `blur(${newTransform.blur}px)` : '';
-
-                card.style.transform = transformValue;
-                card.style.filter = filterValue;
-                lastTransforms.set(i, newTransform);
-            }
-        });
-    }
-
-    // Set initial card styles
-    cards.forEach((card, i) => {
-        card.style.willChange = 'transform, filter';
-        card.style.transformOrigin = 'top center';
-        if (i < cards.length - 1) {
-            // Match the vertical gap
-            card.style.marginBottom = config.itemDistance + 'px';
-        }
-    });
-
-    // Listen to scroll
-    window.addEventListener('scroll', updateCardTransforms);
-    window.addEventListener('resize', updateCardTransforms);
-
-    // Initial call
-    updateCardTransforms();
-}
-
-// Update DOMContentLoaded to call initScrollStack
 document.addEventListener('DOMContentLoaded', () => {
     initScrollReveal();
     initCountUp();
 
-    // Only init Scroll Stack on mobile devices originally intended
-    if (window.innerWidth <= 768) {
-        initScrollStack();
-    }
-
     // Refresh everything after initial load
     window.addEventListener('load', () => {
         ScrollTrigger.refresh();
-        if (window.innerWidth <= 768) {
-            // Recalculate transforms after all assets load
-            window.dispatchEvent(new Event('scroll'));
-        }
     });
 });
 
@@ -389,3 +239,188 @@ function initScrollReveal() {
         });
     });
 }
+
+/** 
+ * ScrollStack Component for Mobile View
+ * Adapted from React Bits ScrollStack
+ */
+class ScrollStack {
+    constructor(options = {}) {
+        this.options = Object.assign({
+            wrapperSelector: '.services-grid',
+            cardSelector: '.service-card',
+            endSelector: '.scroll-stack-end',
+            itemDistance: 100, // Distance to start stacking
+            itemScale: 0.05,   // Scale difference per item
+            itemStackDistance: 30, // Distance between stacked items in pixels
+            stackPosition: '20%', // Where the stack locks (viewport percentage)
+            scaleEndPosition: '10%', // Where scaling ends
+            baseScale: 0.9,
+            scaleDuration: 0.5,
+            rotationAmount: 0
+        }, options);
+
+        this.wrapper = document.querySelector(this.options.wrapperSelector);
+        this.endElement = document.querySelector(this.options.endSelector);
+        this.cards = [];
+        this.isActive = false;
+        this.rafId = null;
+
+        if (this.wrapper) {
+            this.cards = Array.from(this.wrapper.querySelectorAll(this.options.cardSelector));
+        }
+
+        this.update = this.update.bind(this);
+        this.onScroll = this.onScroll.bind(this);
+
+        this.init();
+    }
+
+    init() {
+        if (!this.wrapper || this.cards.length === 0) return;
+        this.checkDevice();
+        window.addEventListener('resize', () => this.checkDevice());
+    }
+
+    checkDevice() {
+        const isMobile = window.innerWidth <= 992; // Use matching breakpoint
+        if (isMobile && !this.isActive) {
+            this.enable();
+        } else if (!isMobile && this.isActive) {
+            this.disable();
+        }
+    }
+
+    enable() {
+        this.isActive = true;
+        window.addEventListener('scroll', this.onScroll, { passive: true });
+        this.rafId = requestAnimationFrame(this.update);
+
+        // Initial setup
+        this.cards.forEach(card => {
+            card.style.willChange = 'transform';
+        });
+    }
+
+    disable() {
+        this.isActive = false;
+        window.removeEventListener('scroll', this.onScroll);
+        if (this.rafId) cancelAnimationFrame(this.rafId);
+
+        // Reset styles
+        this.cards.forEach(card => {
+            card.style.transform = '';
+            // Don't reset other styles that might be CSS driven
+        });
+    }
+
+    onScroll() {
+        // Trigger update if not already running (though we play continuous loop for smoothness)
+    }
+
+    getOffsetTop(element) {
+        let offsetTop = 0;
+        let el = element;
+        while (el) {
+            offsetTop += el.offsetTop;
+            el = el.offsetParent;
+        }
+        return offsetTop;
+    }
+
+    parsePercentage(value, containerHeight) {
+        if (typeof value === 'string' && value.includes('%')) {
+            return (parseFloat(value) / 100) * containerHeight;
+        }
+        return parseFloat(value);
+    }
+
+    update() {
+        if (!this.isActive) return;
+
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const containerHeight = window.innerHeight;
+
+        const stackPositionPx = this.parsePercentage(this.options.stackPosition, containerHeight);
+        const scaleEndPositionPx = this.parsePercentage(this.options.scaleEndPosition, containerHeight);
+        const itemStackDistance = this.options.itemStackDistance;
+
+        // Determine pin end point
+        let endElementTop = 0;
+        if (this.endElement) {
+            // Because endElement might be transformed if inside wrapper? 
+            // No, endElement is at the bottom of wrapper.
+            // But if wrapper has position relative, offsetTop is relative to document if we traverse.
+            endElementTop = this.getOffsetTop(this.endElement);
+        } else {
+            // Fallback
+            const rect = this.wrapper.getBoundingClientRect();
+            endElementTop = rect.bottom + scrollTop;
+        }
+
+        const pinEnd = endElementTop - containerHeight / 2;
+
+        this.cards.forEach((card, i) => {
+            // We need a stable top position.
+            // Since cards are in flow (relative), their offsetTop is stable unless parents move or flow changes.
+            // We do NOT change `top`, we only change `transform`.
+            // `transform` does not affect `offsetTop` relative to parent.
+            const cardTop = this.getOffsetTop(card);
+
+            const triggerStart = cardTop - stackPositionPx - (itemStackDistance * i);
+            const triggerEnd = cardTop - scaleEndPositionPx;
+
+            // Calculate Scale
+            let scaleProgress = 0;
+            if (scrollTop < triggerStart) {
+                scaleProgress = 0;
+            } else if (scrollTop >= triggerStart && scrollTop <= triggerEnd) {
+                scaleProgress = (scrollTop - triggerStart) / (triggerEnd - triggerStart);
+            } else {
+                scaleProgress = 1;
+            }
+
+            const targetScale = this.options.baseScale + (i * this.options.itemScale);
+            const scale = 1 - scaleProgress * (1 - targetScale);
+
+            // Calculate Translation
+            // Sticky behavior: We want visual Y = stackPositionPx + (i * distance) relative to viewport.
+            // Visual Y = (cardTop - scrollTop) + translateY
+            // Target Visual Y = stackPositionPx + (itemStackDistance * i)
+            // translateY = Target Y - (cardTop - scrollTop)
+            // translateY = stackPositionPx + (itemStackDistance * i) - cardTop + scrollTop
+
+            // Logic:
+            // 1. Before Pin (p < 0): Normal flow (translateY = 0) ?
+            //    Wait, triggerStart is when cardTop - scrollTop == stackPosition...
+            //    So if scrollTop < triggerStart, card is below the stack position.
+            //    We let it scroll naturally? Yes.
+
+            let translateY = 0;
+            if (scrollTop >= triggerStart && scrollTop <= pinEnd) {
+                translateY = scrollTop - cardTop + stackPositionPx + (itemStackDistance * i);
+            } else if (scrollTop > pinEnd) {
+                // Stick at bottom
+                translateY = pinEnd - cardTop + stackPositionPx + (itemStackDistance * i);
+            }
+
+            // Apply
+            card.style.transform = `translate3d(0, ${translateY}px, 0) scale(${scale})`;
+        });
+
+        this.rafId = requestAnimationFrame(this.update);
+    }
+}
+
+// Initialize ScrollStack
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if on the page with services
+    if (document.querySelector('.services-grid')) {
+        new ScrollStack({
+            itemStackDistance: 30,
+            itemScale: 0.03,
+            baseScale: 0.85,
+            stackPosition: '20%'
+        });
+    }
+});
