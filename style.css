@@ -954,65 +954,126 @@ img {
 
 .service-card {
     background: var(--white);
-    padding: 40px 30px;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     transition: var(--transition);
-    position: relative;
     overflow: hidden;
-    border-top: 4px solid transparent;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .service-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    border-top: 4px solid var(--primary-red);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
 }
 
-.icon-box {
-    width: 60px;
-    height: 60px;
-    background-color: rgba(13, 71, 161, 0.1);
-    /* Light Blue */
-    color: var(--primary-blue);
+.card-image-box {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.card-image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.card-content {
+    padding: 0 25px 25px 25px;
+    flex-grow: 1;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    font-size: 1.5rem;
-    border-radius: 50%;
-    margin-bottom: 25px;
-    transition: var(--transition);
+    margin-bottom: 5px;
 }
 
-.service-card:hover .icon-box {
-    background-color: var(--primary-blue);
-    color: var(--white);
-}
-
-.service-card h3 {
-    margin-bottom: 15px;
+.card-header h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
     color: var(--text-dark);
 }
 
-.service-card p {
-    color: var(--text-light);
-    margin-bottom: 25px;
-    font-size: 0.95rem;
-}
-
-.learn-more {
-    color: var(--primary-red);
-    font-weight: 600;
-    font-size: 0.9rem;
+.card-rating {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 5px;
+    font-size: 0.9rem;
+    color: #4B5563;
 }
 
-.learn-more:hover {
-    color: var(--primary-blue);
+.card-rating i {
+    color: #FBBF24;
+    /* Star Gold */
+}
+
+.card-category {
+    font-size: 0.9rem;
+    color: #9CA3AF;
+    margin-bottom: 20px;
+}
+
+.card-description {
+    font-size: 0.95rem;
+    color: #4B5563;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    flex-grow: 1;
+}
+
+.card-footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-start;
+    /* Align button to the left */
+    border-top: 1px solid #F3F4F6;
+    padding-top: 20px;
+}
+
+.btn-booking {
+    background-color: #0D47A1;
+    /* Corporate Blue from the image */
+    color: var(--white);
+    padding: 12px 24px;
+    border-radius: 8px;
+    /* Slightly less rounded corners as in the image */
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     gap: 12px;
-    /* Animated arrow movement */
+    box-shadow: 0 4px 12px rgba(13, 71, 161, 0.2);
+    white-space: nowrap;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.btn-booking i {
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-booking:hover {
+    background-color: #0A3D8A;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(13, 71, 161, 0.3);
+    color: var(--white);
+}
+
+.btn-booking:hover i {
+    transform: translateX(5px);
 }
 
 /* Stats Section */
