@@ -554,14 +554,20 @@ img {
 .btn-nav {
     background-color: var(--primary-red);
     color: var(--white) !important;
-    padding: 10px 20px !important;
+    padding: 8px 15px !important;
+    /* Reduced padding */
     border-radius: 4px;
-    width: 130px;
-    /* Fixed width to make both buttons identical */
+    width: 110px;
+    /* Fixed width for uniformity */
+    /* Dynamic width removed */
+    /* min-width removed or redundant */
+    font-size: 0.85rem;
+    /* Match nav links */
     display: inline-flex;
-    /* Use flex to center content perfectly */
     justify-content: center;
     align-items: center;
+    white-space: nowrap;
+    /* Prevent button text wrapping */
 }
 
 .btn-nav:hover {
@@ -595,6 +601,13 @@ img {
     align-items: center;
 }
 
+/* Navigation Container Override for more space */
+/* Navigation Container Override for more space */
+.navbar .container {
+    max-width: 1450px;
+    /* Increased to allow more room */
+}
+
 .logo {
     display: flex;
     align-items: center;
@@ -602,6 +615,9 @@ img {
     font-weight: 800;
     font-size: 1.5rem;
     color: var(--primary-blue);
+    padding-left: 120px;
+    /* Fine-tuned alignment to the right */
+    /* Align with hero content 'S' */
 }
 
 .logo-img {
@@ -612,14 +628,23 @@ img {
 .nav-menu {
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 12px;
+    /* Slightly tighter gap to prevent wrapping */
+    padding-right: 150px;
+    /* Shifted even further left as requested */
 }
 
 .nav-links {
     font-weight: 500;
     color: var(--text-dark);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    /* Prevent text wrapping */
+    letter-spacing: -0.01em;
+    /* Slight tightening */
 }
+
+/* Specific spacing removed to bring buttons closer */
 
 .nav-links:hover {
     color: var(--primary-red);
@@ -1321,6 +1346,8 @@ img {
     .menu-overlay.active {
         opacity: 1;
         visibility: visible;
+        backdrop-filter: none;
+        /* Ensure no blur */
     }
 
     /* Drawer Menu Style */
@@ -1348,7 +1375,6 @@ img {
         text-align: left;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: -5px 0 10px rgba(0, 0, 0, 0.1);
-        /* Side shadow for drawer */
         z-index: 1100;
         overflow-y: auto;
     }
@@ -1397,6 +1423,11 @@ img {
         text-align: center;
         padding: 0 40px;
         max-width: 100%;
+    }
+
+    .logo {
+        padding-left: 0;
+        /* Reset padding for mobile */
     }
 
     .hero-buttons {
