@@ -136,7 +136,7 @@ if (lenis) {
 // Initialize when the DOM is ready
 
 // Scroll Stack Component Initialization
-// Scroll Stack Component Initialization with specialized iPhone/Safari optimizations
+// Scroll Stack Component Initialization - High Performance Mode (Optimized for iPhone/Safari)
 function initScrollStack() {
     const scroller = document.querySelector('.scroll-stack-scroller');
     const inner = document.querySelector('.scroll-stack-inner');
@@ -147,12 +147,10 @@ function initScrollStack() {
 
     const config = {
         itemDistance: 100,
-        itemScale: 0.03,
-        itemStackDistance: 30,
-        stackPosition: '10%', // Higher stack to avoid overlap
-        scaleEndPosition: '5%',
-        baseScale: 0.88,
-        blurAmount: 1, // Reduced blur for better performance
+        itemScale: 0.04,
+        itemStackDistance: 25,
+        stackPosition: '10%',
+        baseScale: 0.9,
     };
 
     const lastTransforms = new Map();
@@ -171,13 +169,6 @@ function initScrollStack() {
         }
     }
 
-    function parsePercentage(value, containerHeight) {
-        if (typeof value === 'string' && value.includes('%')) {
-            return (parseFloat(value) / 100) * containerHeight;
-        }
-        return parseFloat(value);
-    }
-
     function calculateProgress(scrollTop, start, end) {
         if (scrollTop < start) return 0;
         if (scrollTop > end) return 1;
@@ -189,61 +180,34 @@ function initScrollStack() {
 
         const scrollTop = window.scrollY;
         const containerHeight = window.innerHeight;
-        const stackPositionPx = parsePercentage(config.stackPosition, containerHeight);
-        const scaleEndPositionPx = parsePercentage(config.scaleEndPosition, containerHeight);
-
-        // Determine top card for blur calculation
-        let topCardIndex = -1;
-        for (let j = 0; j < cards.length; j++) {
-            const jTriggerStart = cardOffsets[j] - stackPositionPx - config.itemStackDistance * j;
-            if (scrollTop >= jTriggerStart) {
-                topCardIndex = j;
-            }
-        }
+        const stackPositionPx = (parseFloat(config.stackPosition) / 100) * containerHeight;
 
         cards.forEach((card, i) => {
             const cardTop = cardOffsets[i];
             const triggerStart = cardTop - stackPositionPx - config.itemStackDistance * i;
-            const triggerEnd = cardTop - scaleEndPositionPx;
+            const triggerEnd = cardTop - (containerHeight * 0.05);
 
-            // Release the cards earlier to prevent overlap with the next section
-            const pinStart = triggerStart;
             const pinEnd = endOffset - containerHeight + (config.itemStackDistance * cards.length);
 
+            // Scale calculation
             const scaleProgress = calculateProgress(scrollTop, triggerStart, triggerEnd);
-            const targetScale = config.baseScale + i * config.itemScale;
-            const scale = 1 - scaleProgress * (1 - targetScale);
+            const targetScale = 1 - (config.itemScale * (cards.length - i));
+            const scale = 1 - (scaleProgress * (1 - targetScale));
 
+            // Pinning calculation
             let translateY = 0;
-            if (scrollTop >= pinStart && scrollTop <= pinEnd) {
+            if (scrollTop >= triggerStart && scrollTop <= pinEnd) {
                 translateY = scrollTop - cardTop + stackPositionPx + config.itemStackDistance * i;
             } else if (scrollTop > pinEnd) {
                 translateY = pinEnd - cardTop + stackPositionPx + config.itemStackDistance * i;
             }
 
-            let blur = 0;
-            if (config.blurAmount > 0 && i < topCardIndex) {
-                blur = Math.min(config.blurAmount * 2, (topCardIndex - i) * config.blurAmount);
-            }
+            // Using hardware accelerated properties without any threshold for maximum smoothness
+            const transformValue = `translate3d(0, ${Math.round(translateY * 10) / 10}px, 0) scale(${Math.round(scale * 1000) / 1000})`;
 
-            const newTransform = {
-                translateY: Math.round(translateY * 10) / 10,
-                scale: Math.round(scale * 1000) / 1000,
-                blur: Math.round(blur * 10) / 10
-            };
-
-            const last = lastTransforms.get(i);
-            if (!last || Math.abs(last.translateY - newTransform.translateY) > 0.5 || Math.abs(last.scale - newTransform.scale) > 0.001 || last.blur !== newTransform.blur) {
-
-                card.style.transform = `translate3d(0, ${newTransform.translateY}px, 0) scale(${newTransform.scale})`;
-
-                if (newTransform.blur >= 0.5) {
-                    card.style.filter = `blur(${newTransform.blur}px)`;
-                } else if (last && last.blur >= 0.5) {
-                    card.style.filter = 'none';
-                }
-
-                lastTransforms.set(i, newTransform);
+            if (lastTransforms.get(i) !== transformValue) {
+                card.style.transform = transformValue;
+                lastTransforms.set(i, transformValue);
             }
         });
 
@@ -257,9 +221,11 @@ function initScrollStack() {
         }
     }
 
+    // Force hardware layers
     cards.forEach((card, i) => {
         card.style.willChange = 'transform';
         card.style.transformOrigin = 'top center';
+        card.style.zIndex = i + 1;
         if (i < cards.length - 1) {
             card.style.marginBottom = config.itemDistance + 'px';
         }
@@ -269,10 +235,12 @@ function initScrollStack() {
     window.addEventListener('scroll', requestTick, { passive: true });
     window.addEventListener('resize', () => { cacheOffsets(); requestTick(); }, { passive: true });
 
-    setTimeout(() => {
-        cacheOffsets();
-        updateCardTransforms();
-    }, 100);
+    // Multi-stage offset catching to ensure layout is stable
+    cacheOffsets();
+    window.addEventListener('load', cacheOffsets);
+    setTimeout(cacheOffsets, 500);
+
+    requestTick();
 }
 
 // Update DOMContentLoaded to call initScrollStack
