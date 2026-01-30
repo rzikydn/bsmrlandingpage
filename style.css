@@ -410,9 +410,6 @@
 /* Section Separator */
 .registration {
     border-top: 1px solid #E5E7EB;
-    position: relative;
-    z-index: 10;
-    background-color: var(--white);
 }
 
 .registration .section-header {
@@ -946,8 +943,6 @@ img {
 /* Services Section */
 .services {
     background-color: var(--bg-light);
-    position: relative;
-    z-index: 1;
 }
 
 .services-grid {
@@ -968,11 +963,9 @@ img {
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-@media (hover: hover) {
-    .service-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-    }
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
 }
 
 .card-image-box {
@@ -1668,8 +1661,6 @@ img {
 .scroll-stack-scroller {
     position: relative;
     width: 100%;
-    -webkit-overflow-scrolling: touch;
-    /* Better iOS inertia */
 }
 
 @media (max-width: 768px) {
@@ -1679,8 +1670,8 @@ img {
     }
 
     .scroll-stack-inner {
-        padding: 0;
-        min-height: auto;
+        padding: 2vh 0 0;
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -1691,26 +1682,22 @@ img {
         transform-origin: top center;
         will-change: transform, filter;
         backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
         transform-style: preserve-3d;
-        -webkit-transform-style: preserve-3d;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         width: 90% !important;
         margin: 20px auto !important;
         border-radius: 24px;
         box-sizing: border-box;
-        -webkit-transform: translate3d(0, 0, 0);
-        transform: translate3d(0, 0, 0);
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
         position: relative;
         background: var(--white);
         min-height: 400px;
-        transition: none !important;
-        /* CRITICAL: Prevent CSS transition fighting with JS animation */
     }
 
     .scroll-stack-end {
         width: 100%;
-        height: 20vh;
-        /* Slightly increased to prevent premature overlap */
+        height: 50vh;
+        /* Extra space to allow stacking of last card */
     }
 }

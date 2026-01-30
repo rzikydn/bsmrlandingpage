@@ -144,15 +144,16 @@ function initScrollStack() {
 
     if (!scroller || !inner || cards.length === 0) return;
 
+    // Configuration from React Bits component
     const config = {
         itemDistance: 100,
         itemScale: 0.03,
         itemStackDistance: 30,
-        stackPosition: '15%',
+        stackPosition: '15%', // Adjusted for mobile header
         scaleEndPosition: '5%',
         baseScale: 0.85,
         rotationAmount: 0,
-        blurAmount: 0, // DISABLED for mobile performance
+        blurAmount: 2,
     };
 
     const lastTransforms = new Map();
@@ -175,14 +176,9 @@ function initScrollStack() {
         return rect.top + window.scrollY;
     }
 
-    // Cache viewport height to prevent jumps on iOS address bar resize
-    let cachedViewportHeight = window.innerHeight;
-
-    // Cache card offsets to avoid layout thrashing
-    let cardOffsets = Array.from(cards).map(card => getElementOffset(card));
-
     function updateCardTransforms() {
         if (window.innerWidth > 768) {
+            // Reset transforms if resized to desktop
             cards.forEach(card => {
                 card.style.transform = '';
                 card.style.filter = '';
@@ -190,16 +186,16 @@ function initScrollStack() {
             return;
         }
 
-        // Clamp scroll top to positive values to avoid bounce glitches
-        const scrollTop = Math.max(0, window.scrollY);
-        const containerHeight = cachedViewportHeight;
+        const scrollTop = window.scrollY;
+        const containerHeight = window.innerHeight;
         const stackPositionPx = parsePercentage(config.stackPosition, containerHeight);
         const scaleEndPositionPx = parsePercentage(config.scaleEndPosition, containerHeight);
         const endElementTop = endElement ? getElementOffset(endElement) : 0;
 
         cards.forEach((card, i) => {
-            const cardTop = cardOffsets[i];
+            const cardTop = getElementOffset(card);
 
+            // Logic from provided React component
             const triggerStart = cardTop - stackPositionPx - config.itemStackDistance * i;
             const triggerEnd = cardTop - scaleEndPositionPx;
             const pinStart = cardTop - stackPositionPx - config.itemStackDistance * i;
@@ -208,6 +204,23 @@ function initScrollStack() {
             const scaleProgress = calculateProgress(scrollTop, triggerStart, triggerEnd);
             const targetScale = config.baseScale + i * config.itemScale;
             const scale = 1 - scaleProgress * (1 - targetScale);
+            const rotation = config.rotationAmount ? i * config.rotationAmount * scaleProgress : 0;
+
+            let blur = 0;
+            if (config.blurAmount) {
+                let topCardIndex = 0;
+                for (let j = 0; j < cards.length; j++) {
+                    const jCardTop = getElementOffset(cards[j]);
+                    const jTriggerStart = jCardTop - stackPositionPx - config.itemStackDistance * j;
+                    if (scrollTop >= jTriggerStart) {
+                        topCardIndex = j;
+                    }
+                }
+                if (i < topCardIndex) {
+                    const depthInStack = topCardIndex - i;
+                    blur = Math.max(0, depthInStack * config.blurAmount);
+                }
+            }
 
             let translateY = 0;
             const isPinned = scrollTop >= pinStart && scrollTop <= pinEnd;
@@ -218,67 +231,44 @@ function initScrollStack() {
                 translateY = pinEnd - cardTop + stackPositionPx + config.itemStackDistance * i;
             }
 
-            // Simplified precision for better mobile performance
             const newTransform = {
-                translateY: Math.round(translateY),
-                scale: Math.round(scale * 100) / 100
+                translateY: Math.round(translateY * 100) / 100,
+                scale: Math.round(scale * 1000) / 1000,
+                rotation: Math.round(rotation * 100) / 100,
+                blur: Math.round(blur * 100) / 100
             };
 
             const lastTransform = lastTransforms.get(i);
-            // Increased threshold to reduce update frequency
             const hasChanged = !lastTransform ||
-                Math.abs(lastTransform.translateY - newTransform.translateY) > 0.5 ||
-                Math.abs(lastTransform.scale - newTransform.scale) > 0.01;
+                Math.abs(lastTransform.translateY - newTransform.translateY) > 0.1 ||
+                Math.abs(lastTransform.scale - newTransform.scale) > 0.001 ||
+                Math.abs(lastTransform.rotation - newTransform.rotation) > 0.1 ||
+                Math.abs(lastTransform.blur - newTransform.blur) > 0.1;
 
             if (hasChanged) {
-                const transformValue = `translate3d(0, ${newTransform.translateY}px, 0) scale(${newTransform.scale})`;
+                const transformValue = `translate3d(0, ${newTransform.translateY}px, 0) scale(${newTransform.scale}) rotate(${newTransform.rotation}deg)`;
+                const filterValue = newTransform.blur > 0 ? `blur(${newTransform.blur}px)` : '';
 
                 card.style.transform = transformValue;
-                card.style.filter = 'none'; // No blur for performance
+                card.style.filter = filterValue;
                 lastTransforms.set(i, newTransform);
             }
         });
     }
 
-    // Recalculate offsets and viewport only on actual resize (debounced/throttled)
-    window.addEventListener('resize', () => {
-        // Only update viewport if it changes significantly (more than address bar size)
-        if (Math.abs(window.innerHeight - cachedViewportHeight) > 100) {
-            cachedViewportHeight = window.innerHeight;
-        }
-
-        cardOffsets = Array.from(cards).map(card => {
-            const oldTransform = card.style.transform;
-            card.style.transform = '';
-            const offset = getElementOffset(card);
-            card.style.transform = oldTransform;
-            return offset;
-        });
-        updateCardTransforms();
-    });
-
     // Set initial card styles
     cards.forEach((card, i) => {
+        card.style.willChange = 'transform, filter';
         card.style.transformOrigin = 'top center';
         if (i < cards.length - 1) {
+            // Match the vertical gap
             card.style.marginBottom = config.itemDistance + 'px';
         }
     });
 
-    // Listen to scroll with requestAnimationFrame for performance
-    let ticking = false;
-    function requestUpdate() {
-        if (!ticking) {
-            requestAnimationFrame(() => {
-                updateCardTransforms();
-                ticking = false;
-            });
-            ticking = true;
-        }
-    }
-
-    window.addEventListener('scroll', requestUpdate, { passive: true });
-    window.addEventListener('resize', requestUpdate, { passive: true });
+    // Listen to scroll
+    window.addEventListener('scroll', updateCardTransforms);
+    window.addEventListener('resize', updateCardTransforms);
 
     // Initial call
     updateCardTransforms();
