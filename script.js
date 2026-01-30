@@ -134,13 +134,163 @@ if (lenis) {
 }
 
 // Initialize when the DOM is ready
+
+// Scroll Stack Component Initialization
+function initScrollStack() {
+    const scroller = document.querySelector('.scroll-stack-scroller');
+    const inner = document.querySelector('.scroll-stack-inner');
+    const cards = document.querySelectorAll('.scroll-stack-card');
+    const endElement = document.querySelector('.scroll-stack-end');
+
+    if (!scroller || !inner || cards.length === 0) return;
+
+    // Configuration from React Bits component
+    const config = {
+        itemDistance: 100,
+        itemScale: 0.03,
+        itemStackDistance: 30,
+        stackPosition: '15%', // Adjusted for mobile header
+        scaleEndPosition: '5%',
+        baseScale: 0.85,
+        rotationAmount: 0,
+        blurAmount: 2,
+    };
+
+    const lastTransforms = new Map();
+
+    function parsePercentage(value, containerHeight) {
+        if (typeof value === 'string' && value.includes('%')) {
+            return (parseFloat(value) / 100) * containerHeight;
+        }
+        return parseFloat(value);
+    }
+
+    function calculateProgress(scrollTop, start, end) {
+        if (scrollTop < start) return 0;
+        if (scrollTop > end) return 1;
+        return (scrollTop - start) / (end - start);
+    }
+
+    function getElementOffset(element) {
+        const rect = element.getBoundingClientRect();
+        return rect.top + window.scrollY;
+    }
+
+    function updateCardTransforms() {
+        if (window.innerWidth > 768) {
+            // Reset transforms if resized to desktop
+            cards.forEach(card => {
+                card.style.transform = '';
+                card.style.filter = '';
+            });
+            return;
+        }
+
+        const scrollTop = window.scrollY;
+        const containerHeight = window.innerHeight;
+        const stackPositionPx = parsePercentage(config.stackPosition, containerHeight);
+        const scaleEndPositionPx = parsePercentage(config.scaleEndPosition, containerHeight);
+        const endElementTop = endElement ? getElementOffset(endElement) : 0;
+
+        cards.forEach((card, i) => {
+            const cardTop = getElementOffset(card);
+
+            // Logic from provided React component
+            const triggerStart = cardTop - stackPositionPx - config.itemStackDistance * i;
+            const triggerEnd = cardTop - scaleEndPositionPx;
+            const pinStart = cardTop - stackPositionPx - config.itemStackDistance * i;
+            const pinEnd = endElementTop - containerHeight / 2;
+
+            const scaleProgress = calculateProgress(scrollTop, triggerStart, triggerEnd);
+            const targetScale = config.baseScale + i * config.itemScale;
+            const scale = 1 - scaleProgress * (1 - targetScale);
+            const rotation = config.rotationAmount ? i * config.rotationAmount * scaleProgress : 0;
+
+            let blur = 0;
+            if (config.blurAmount) {
+                let topCardIndex = 0;
+                for (let j = 0; j < cards.length; j++) {
+                    const jCardTop = getElementOffset(cards[j]);
+                    const jTriggerStart = jCardTop - stackPositionPx - config.itemStackDistance * j;
+                    if (scrollTop >= jTriggerStart) {
+                        topCardIndex = j;
+                    }
+                }
+                if (i < topCardIndex) {
+                    const depthInStack = topCardIndex - i;
+                    blur = Math.max(0, depthInStack * config.blurAmount);
+                }
+            }
+
+            let translateY = 0;
+            const isPinned = scrollTop >= pinStart && scrollTop <= pinEnd;
+
+            if (isPinned) {
+                translateY = scrollTop - cardTop + stackPositionPx + config.itemStackDistance * i;
+            } else if (scrollTop > pinEnd) {
+                translateY = pinEnd - cardTop + stackPositionPx + config.itemStackDistance * i;
+            }
+
+            const newTransform = {
+                translateY: Math.round(translateY * 100) / 100,
+                scale: Math.round(scale * 1000) / 1000,
+                rotation: Math.round(rotation * 100) / 100,
+                blur: Math.round(blur * 100) / 100
+            };
+
+            const lastTransform = lastTransforms.get(i);
+            const hasChanged = !lastTransform ||
+                Math.abs(lastTransform.translateY - newTransform.translateY) > 0.1 ||
+                Math.abs(lastTransform.scale - newTransform.scale) > 0.001 ||
+                Math.abs(lastTransform.rotation - newTransform.rotation) > 0.1 ||
+                Math.abs(lastTransform.blur - newTransform.blur) > 0.1;
+
+            if (hasChanged) {
+                const transformValue = `translate3d(0, ${newTransform.translateY}px, 0) scale(${newTransform.scale}) rotate(${newTransform.rotation}deg)`;
+                const filterValue = newTransform.blur > 0 ? `blur(${newTransform.blur}px)` : '';
+
+                card.style.transform = transformValue;
+                card.style.filter = filterValue;
+                lastTransforms.set(i, newTransform);
+            }
+        });
+    }
+
+    // Set initial card styles
+    cards.forEach((card, i) => {
+        card.style.willChange = 'transform, filter';
+        card.style.transformOrigin = 'top center';
+        if (i < cards.length - 1) {
+            // Match the vertical gap
+            card.style.marginBottom = config.itemDistance + 'px';
+        }
+    });
+
+    // Listen to scroll
+    window.addEventListener('scroll', updateCardTransforms);
+    window.addEventListener('resize', updateCardTransforms);
+
+    // Initial call
+    updateCardTransforms();
+}
+
+// Update DOMContentLoaded to call initScrollStack
 document.addEventListener('DOMContentLoaded', () => {
     initScrollReveal();
     initCountUp();
 
+    // Only init Scroll Stack on mobile devices originally intended
+    if (window.innerWidth <= 768) {
+        initScrollStack();
+    }
+
     // Refresh everything after initial load
     window.addEventListener('load', () => {
         ScrollTrigger.refresh();
+        if (window.innerWidth <= 768) {
+            // Recalculate transforms after all assets load
+            window.dispatchEvent(new Event('scroll'));
+        }
     });
 });
 
