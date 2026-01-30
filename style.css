@@ -1683,7 +1683,9 @@ img {
 
     .service-card.scroll-stack-card {
         transform-origin: top center;
-        will-change: transform, filter;
+        will-change: transform;
+        /* CRITICAL: Disable all CSS transitions to prevent fighting with JS updates */
+        transition: none !important;
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         -webkit-transform-style: preserve-3d;
@@ -1699,6 +1701,12 @@ img {
         position: relative;
         background: var(--white);
         min-height: 400px;
+    }
+
+    /* Disable hover lift on mobile for scroll stack cards to prevent clashing with JS transforms */
+    .service-card.scroll-stack-card:hover {
+        transform: none !important;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08) !important;
     }
 
     .scroll-stack-end {
