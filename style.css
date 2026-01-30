@@ -961,21 +961,14 @@ img {
     background: var(--white);
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: var(--transition);
     overflow: hidden;
     display: flex;
     flex-direction: column;
     border: 1px solid rgba(0, 0, 0, 0.05);
-    -webkit-tap-highlight-color: transparent;
-    touch-action: pan-y;
-    user-select: none;
-    -webkit-user-select: none;
 }
 
 @media (hover: hover) {
-    .service-card {
-        transition: var(--transition);
-    }
-
     .service-card:hover {
         transform: translateY(-10px);
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
@@ -1062,6 +1055,7 @@ img {
     /* Slightly less rounded corners as in the image */
     font-weight: 700;
     font-size: 0.95rem;
+    transition: var(--transition);
     border: none;
     display: inline-flex;
     align-items: center;
@@ -1075,27 +1069,18 @@ img {
 
 .btn-booking i {
     font-size: 0.9rem;
+    transition: transform 0.3s ease;
 }
 
-@media (hover: hover) {
-    .btn-booking {
-        transition: var(--transition);
-    }
+.btn-booking:hover {
+    background-color: #0A3D8A;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(13, 71, 161, 0.3);
+    color: var(--white);
+}
 
-    .btn-booking i {
-        transition: transform 0.3s ease;
-    }
-
-    .btn-booking:hover {
-        background-color: #0A3D8A;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(13, 71, 161, 0.3);
-        color: var(--white);
-    }
-
-    .btn-booking:hover i {
-        transform: translateX(5px);
-    }
+.btn-booking:hover i {
+    transform: translateX(5px);
 }
 
 /* Stats Section */
@@ -1704,8 +1689,7 @@ img {
 
     .service-card.scroll-stack-card {
         transform-origin: top center;
-        will-change: transform;
-        /* Removed filter from will-change */
+        will-change: transform, filter;
         backface-visibility: hidden;
         -webkit-backface-visibility: hidden;
         transform-style: preserve-3d;
@@ -1721,8 +1705,7 @@ img {
         background: var(--white);
         min-height: 400px;
         transition: none !important;
-        z-index: 1;
-        /* Baseline z-index */
+        /* CRITICAL: Prevent CSS transition fighting with JS animation */
     }
 
     .scroll-stack-end {

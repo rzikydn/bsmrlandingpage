@@ -144,16 +144,15 @@ function initScrollStack() {
 
     if (!scroller || !inner || cards.length === 0) return;
 
-    // Configuration from React Bits component
     const config = {
         itemDistance: 100,
         itemScale: 0.03,
         itemStackDistance: 30,
-        stackPosition: '15%', // Adjusted for mobile header
+        stackPosition: '15%',
         scaleEndPosition: '5%',
         baseScale: 0.85,
         rotationAmount: 0,
-        blurAmount: 0, // DISABLED BLUR ON MOBILE: Extreme performance cost on iOS Safari
+        blurAmount: 0, // DISABLED for mobile performance
     };
 
     const lastTransforms = new Map();
@@ -209,7 +208,6 @@ function initScrollStack() {
             const scaleProgress = calculateProgress(scrollTop, triggerStart, triggerEnd);
             const targetScale = config.baseScale + i * config.itemScale;
             const scale = 1 - scaleProgress * (1 - targetScale);
-            const rotation = config.rotationAmount ? i * config.rotationAmount * scaleProgress : 0;
 
             let translateY = 0;
             const isPinned = scrollTop >= pinStart && scrollTop <= pinEnd;
@@ -220,22 +218,23 @@ function initScrollStack() {
                 translateY = pinEnd - cardTop + stackPositionPx + config.itemStackDistance * i;
             }
 
-            // High precision transforms for smoother rendering on high-DPI screens
+            // Simplified precision for better mobile performance
             const newTransform = {
-                translateY: Math.round(translateY * 100) / 100,
-                scale: Math.round(scale * 1000) / 1000,
-                rotation: Math.round(rotation * 100) / 100,
-                zIndex: i + 10 // Explicit z-index for stacking stability
+                translateY: Math.round(translateY),
+                scale: Math.round(scale * 100) / 100
             };
 
             const lastTransform = lastTransforms.get(i);
+            // Increased threshold to reduce update frequency
             const hasChanged = !lastTransform ||
-                Math.abs(lastTransform.translateY - newTransform.translateY) > 0.05 ||
-                Math.abs(lastTransform.scale - newTransform.scale) > 0.001;
+                Math.abs(lastTransform.translateY - newTransform.translateY) > 0.5 ||
+                Math.abs(lastTransform.scale - newTransform.scale) > 0.01;
 
             if (hasChanged) {
-                card.style.transform = `translate3d(0, ${newTransform.translateY}px, 0) scale(${newTransform.scale}) rotate(${newTransform.rotation}deg)`;
-                card.style.zIndex = newTransform.zIndex;
+                const transformValue = `translate3d(0, ${newTransform.translateY}px, 0) scale(${newTransform.scale})`;
+
+                card.style.transform = transformValue;
+                card.style.filter = 'none'; // No blur for performance
                 lastTransforms.set(i, newTransform);
             }
         });
@@ -260,11 +259,8 @@ function initScrollStack() {
 
     // Set initial card styles
     cards.forEach((card, i) => {
-        card.style.willChange = 'transform';
         card.style.transformOrigin = 'top center';
-        card.style.zIndex = i + 10;
         if (i < cards.length - 1) {
-            // Match the vertical gap
             card.style.marginBottom = config.itemDistance + 'px';
         }
     });
