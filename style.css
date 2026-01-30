@@ -410,6 +410,9 @@
 /* Section Separator */
 .registration {
     border-top: 1px solid #E5E7EB;
+    position: relative;
+    z-index: 2;
+    /* Ensure it covers anything sticky if needed */
 }
 
 .registration .section-header {
@@ -1659,49 +1662,41 @@ img {
 
 /* Scroll Stack Component (Mobile Only) */
 @media (max-width: 992px) {
+    .services.section {
+        padding-bottom: 40px;
+        /* Reduced from default 80px */
+    }
+
     .services-grid {
         position: relative;
         display: flex;
         flex-direction: column;
         gap: 0;
-        /* Gap handled by margin or sticky offset */
-        padding-bottom: 50px;
+        /* Minimize padding to remove gap completely */
+        padding-bottom: 0;
     }
 
     .service-card {
         position: sticky;
         top: 20vh;
-        /* Fallback */
         width: 100%;
-        margin-bottom: 30vh;
-        /* Spacing ensuring we can scroll enough to see the next card */
-        /* min-height ensures consistent sizing */
+        margin-bottom: 5vh;
+        /* Reduced significantly from 15vh to bring next section closer */
         min-height: 400px;
         background: var(--white);
         transform-origin: top center;
         will-change: transform;
         z-index: 1;
-        /* Remove transform transition to prevent fighting with JS */
         transition: box-shadow 0.3s ease;
         box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
-        /* Shadow on top to distinguish from card below */
     }
 
-    /* Assign z-indices so earlier cards are behind later cards? 
-       Actually with sticky, later elements naturally cover earlier ones. 
-       But we want earlier ones to stay visible underneath? 
-       Yes, sticky stack behavior: 1 sticks, 2 slides over 1.
-       So naturally 2 is z-index higher than 1 in DOM order. 
-       This works automatically.
-    */
-
-    /* Adjust padding for the last card so it doesn't leave a huge gap */
+    /* Remove margin for the last card to prevent gap before next section */
     .service-card:last-child {
-        margin-bottom: 0;
+        margin-bottom: 0 !important;
     }
 
     .scroll-stack-end {
         display: none;
-        /* Not needed for sticky implementation */
     }
 }
