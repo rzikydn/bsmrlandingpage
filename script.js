@@ -176,8 +176,11 @@ function initScrollStack() {
         return rect.top + window.scrollY;
     }
 
+    // Cache viewport height to prevent jumps on iOS address bar resize
+    let cachedViewportHeight = window.innerHeight;
+
     // Cache card offsets to avoid layout thrashing
-    const cardOffsets = Array.from(cards).map(card => getElementOffset(card));
+    let cardOffsets = Array.from(cards).map(card => getElementOffset(card));
 
     function updateCardTransforms() {
         if (window.innerWidth > 768) {
@@ -188,14 +191,15 @@ function initScrollStack() {
             return;
         }
 
-        const scrollTop = window.scrollY;
-        const containerHeight = window.innerHeight;
+        // Clamp scroll top to positive values to avoid bounce glitches
+        const scrollTop = Math.max(0, window.scrollY);
+        const containerHeight = cachedViewportHeight;
         const stackPositionPx = parsePercentage(config.stackPosition, containerHeight);
         const scaleEndPositionPx = parsePercentage(config.scaleEndPosition, containerHeight);
         const endElementTop = endElement ? getElementOffset(endElement) : 0;
 
         cards.forEach((card, i) => {
-            const cardTop = cardOffsets[i]; // Use cached offset
+            const cardTop = cardOffsets[i];
 
             const triggerStart = cardTop - stackPositionPx - config.itemStackDistance * i;
             const triggerEnd = cardTop - scaleEndPositionPx;
@@ -232,23 +236,23 @@ function initScrollStack() {
                 translateY = pinEnd - cardTop + stackPositionPx + config.itemStackDistance * i;
             }
 
+            // High precision transforms for smoother rendering on high-DPI screens
             const newTransform = {
-                translateY: Math.round(translateY * 100) / 100,
-                scale: Math.round(scale * 1000) / 1000,
-                rotation: Math.round(rotation * 100) / 100,
-                blur: Math.round(blur * 100) / 100
+                translateY: Math.round(translateY * 1000) / 1000,
+                scale: Math.round(scale * 10000) / 10000,
+                rotation: Math.round(rotation * 1000) / 1000,
+                blur: Math.round(blur * 1000) / 1000
             };
 
             const lastTransform = lastTransforms.get(i);
+            // Smaller threshold for smoother catching of sub-pixel movements
             const hasChanged = !lastTransform ||
-                Math.abs(lastTransform.translateY - newTransform.translateY) > 0.1 ||
-                Math.abs(lastTransform.scale - newTransform.scale) > 0.001 ||
-                Math.abs(lastTransform.rotation - newTransform.rotation) > 0.1 ||
-                Math.abs(lastTransform.blur - newTransform.blur) > 0.1;
+                Math.abs(lastTransform.translateY - newTransform.translateY) > 0.01 ||
+                Math.abs(lastTransform.scale - newTransform.scale) > 0.0001;
 
             if (hasChanged) {
                 const transformValue = `translate3d(0, ${newTransform.translateY}px, 0) scale(${newTransform.scale}) rotate(${newTransform.rotation}deg)`;
-                const filterValue = newTransform.blur > 0 ? `blur(${newTransform.blur}px)` : '';
+                const filterValue = (config.blurAmount && newTransform.blur > 0) ? `blur(${newTransform.blur}px)` : 'none';
 
                 card.style.transform = transformValue;
                 card.style.filter = filterValue;
@@ -257,16 +261,21 @@ function initScrollStack() {
         });
     }
 
-    // Recalculate offsets on resize
+    // Recalculate offsets and viewport only on actual resize (debounced/throttled)
     window.addEventListener('resize', () => {
-        cardOffsets.length = 0;
-        cards.forEach(card => {
-            // Temporarily clear transform to get clean offset
+        // Only update viewport if it changes significantly (more than address bar size)
+        if (Math.abs(window.innerHeight - cachedViewportHeight) > 100) {
+            cachedViewportHeight = window.innerHeight;
+        }
+
+        cardOffsets = Array.from(cards).map(card => {
             const oldTransform = card.style.transform;
             card.style.transform = '';
-            cardOffsets.push(getElementOffset(card));
+            const offset = getElementOffset(card);
             card.style.transform = oldTransform;
+            return offset;
         });
+        updateCardTransforms();
     });
 
     // Set initial card styles
