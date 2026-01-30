@@ -241,38 +241,30 @@ function initScrollReveal() {
 }
 
 /** 
- * ScrollStack Component for Mobile View
- * Adapted from React Bits ScrollStack
+ * ScrollStack Component (Sticky Hybrid Version)
+ * Uses native position: sticky for movement and JS for scaling effects.
+ * Much smoother on mobile devices.
  */
 class ScrollStack {
     constructor(options = {}) {
         this.options = Object.assign({
             wrapperSelector: '.services-grid',
             cardSelector: '.service-card',
-            endSelector: '.scroll-stack-end',
-            itemDistance: 100, // Distance to start stacking
-            itemScale: 0.05,   // Scale difference per item
-            itemStackDistance: 30, // Distance between stacked items in pixels
-            stackPosition: '20%', // Where the stack locks (viewport percentage)
-            scaleEndPosition: '10%', // Where scaling ends
-            baseScale: 0.9,
-            scaleDuration: 0.5,
-            rotationAmount: 0
+            stackOffset: 20, // vh
+            cardSpacing: 30, // px
+            scaleSpread: 0.05, // Scale reduction per card
+            baseScale: 1
         }, options);
 
         this.wrapper = document.querySelector(this.options.wrapperSelector);
-        this.endElement = document.querySelector(this.options.endSelector);
         this.cards = [];
         this.isActive = false;
-        this.rafId = null;
 
         if (this.wrapper) {
             this.cards = Array.from(this.wrapper.querySelectorAll(this.options.cardSelector));
         }
 
-        this.update = this.update.bind(this);
         this.onScroll = this.onScroll.bind(this);
-
         this.init();
     }
 
@@ -283,7 +275,7 @@ class ScrollStack {
     }
 
     checkDevice() {
-        const isMobile = window.innerWidth <= 992; // Use matching breakpoint
+        const isMobile = window.innerWidth <= 992;
         if (isMobile && !this.isActive) {
             this.enable();
         } else if (!isMobile && this.isActive) {
@@ -293,134 +285,90 @@ class ScrollStack {
 
     enable() {
         this.isActive = true;
-        window.addEventListener('scroll', this.onScroll, { passive: true });
-        this.rafId = requestAnimationFrame(this.update);
 
-        // Initial setup
-        this.cards.forEach(card => {
-            card.style.willChange = 'transform';
+        // Setup initial sticky positions
+        this.cards.forEach((card, i) => {
+            // Each card sticks slightly lower than the previous to create the "stack" look
+            const topOffset = `calc(${this.options.stackOffset}vh + ${i * this.options.cardSpacing}px)`;
+            card.style.top = topOffset;
         });
+
+        window.addEventListener('scroll', this.onScroll, { passive: true });
+        this.onScroll(); // Initial calculate
     }
 
     disable() {
         this.isActive = false;
         window.removeEventListener('scroll', this.onScroll);
-        if (this.rafId) cancelAnimationFrame(this.rafId);
 
-        // Reset styles
         this.cards.forEach(card => {
+            card.style.top = '';
             card.style.transform = '';
-            // Don't reset other styles that might be CSS driven
+            card.style.opacity = '';
+            card.style.filter = '';
         });
     }
 
     onScroll() {
-        // Trigger update if not already running (though we play continuous loop for smoothness)
-    }
-
-    getOffsetTop(element) {
-        let offsetTop = 0;
-        let el = element;
-        while (el) {
-            offsetTop += el.offsetTop;
-            el = el.offsetParent;
-        }
-        return offsetTop;
-    }
-
-    parsePercentage(value, containerHeight) {
-        if (typeof value === 'string' && value.includes('%')) {
-            return (parseFloat(value) / 100) * containerHeight;
-        }
-        return parseFloat(value);
-    }
-
-    update() {
         if (!this.isActive) return;
 
-        const scrollTop = window.scrollY || document.documentElement.scrollTop;
-        const containerHeight = window.innerHeight;
-
-        const stackPositionPx = this.parsePercentage(this.options.stackPosition, containerHeight);
-        const scaleEndPositionPx = this.parsePercentage(this.options.scaleEndPosition, containerHeight);
-        const itemStackDistance = this.options.itemStackDistance;
-
-        // Determine pin end point
-        let endElementTop = 0;
-        if (this.endElement) {
-            // Because endElement might be transformed if inside wrapper? 
-            // No, endElement is at the bottom of wrapper.
-            // But if wrapper has position relative, offsetTop is relative to document if we traverse.
-            endElementTop = this.getOffsetTop(this.endElement);
-        } else {
-            // Fallback
-            const rect = this.wrapper.getBoundingClientRect();
-            endElementTop = rect.bottom + scrollTop;
-        }
-
-        const pinEnd = endElementTop - containerHeight / 2;
+        // Optimization: Use requestAnimationFrame only if needed, 
+        // but for scroll-linked effects, raw listener is often fine if logic is cheap.
+        // We will use a simple flag to throttle if needed, but here we keep it direct for responsiveness.
 
         this.cards.forEach((card, i) => {
-            // We need a stable top position.
-            // Since cards are in flow (relative), their offsetTop is stable unless parents move or flow changes.
-            // We do NOT change `top`, we only change `transform`.
-            // `transform` does not affect `offsetTop` relative to parent.
-            const cardTop = this.getOffsetTop(card);
+            // We only scale cards that are effectively "covered" by the next card.
+            // Or rather, as a card moves up to its sticky position, it stays at scale 1.
+            // As the Next Card (i+1) comes up and covers it, the current card (i) scales down.
 
-            const triggerStart = cardTop - stackPositionPx - (itemStackDistance * i);
-            const triggerEnd = cardTop - scaleEndPositionPx;
+            const nextCard = this.cards[i + 1];
+            if (!nextCard) return;
 
-            // Calculate Scale
-            let scaleProgress = 0;
-            if (scrollTop < triggerStart) {
-                scaleProgress = 0;
-            } else if (scrollTop >= triggerStart && scrollTop <= triggerEnd) {
-                scaleProgress = (scrollTop - triggerStart) / (triggerEnd - triggerStart);
+            const cardRect = card.getBoundingClientRect();
+            const nextRect = nextCard.getBoundingClientRect();
+
+            // Calculate how much the next card has covered the current card
+            // We know current card is sticky at 'top'.
+            // nextCard comes from bottom.
+            // Distance between them:
+            const distance = nextRect.top - cardRect.top;
+
+            // Define a range where scaling happens. 
+            // e.g., when distance is large (next card far away), scale is 1.
+            // when distance is small (next card overlapping), scale reduces.
+
+            const windowHeight = window.innerHeight;
+            const triggerDistance = windowHeight * 0.5; // Start scaling when next card is close
+
+            let progress = 1 - (distance / triggerDistance);
+            progress = Math.max(0, Math.min(1, progress)); // Clamp 0-1
+
+            // progress 0 = next card far away
+            // progress 1 = next card fully on top (or close enough)
+
+            if (progress > 0) {
+                const targetScale = this.options.baseScale - (this.options.scaleSpread * (this.cards.length - i));
+                // Actually simpler: just scale down a bit.
+                // Let's say max scale down is 0.9.
+                const scale = 1 - (progress * 0.05); // Scale down by 5% max per overlap
+
+                // blur?
+                const blur = progress * 2; // 0 to 2px blur
+
+                card.style.transform = `scale(${scale})`;
+                card.style.filter = `blur(${blur}px)`;
+                // opacity?
+                // card.style.opacity = 1 - (progress * 0.2); 
             } else {
-                scaleProgress = 1;
+                card.style.transform = 'scale(1)';
+                card.style.filter = 'none';
             }
-
-            const targetScale = this.options.baseScale + (i * this.options.itemScale);
-            const scale = 1 - scaleProgress * (1 - targetScale);
-
-            // Calculate Translation
-            // Sticky behavior: We want visual Y = stackPositionPx + (i * distance) relative to viewport.
-            // Visual Y = (cardTop - scrollTop) + translateY
-            // Target Visual Y = stackPositionPx + (itemStackDistance * i)
-            // translateY = Target Y - (cardTop - scrollTop)
-            // translateY = stackPositionPx + (itemStackDistance * i) - cardTop + scrollTop
-
-            // Logic:
-            // 1. Before Pin (p < 0): Normal flow (translateY = 0) ?
-            //    Wait, triggerStart is when cardTop - scrollTop == stackPosition...
-            //    So if scrollTop < triggerStart, card is below the stack position.
-            //    We let it scroll naturally? Yes.
-
-            let translateY = 0;
-            if (scrollTop >= triggerStart && scrollTop <= pinEnd) {
-                translateY = scrollTop - cardTop + stackPositionPx + (itemStackDistance * i);
-            } else if (scrollTop > pinEnd) {
-                // Stick at bottom
-                translateY = pinEnd - cardTop + stackPositionPx + (itemStackDistance * i);
-            }
-
-            // Apply
-            card.style.transform = `translate3d(0, ${translateY}px, 0) scale(${scale})`;
         });
-
-        this.rafId = requestAnimationFrame(this.update);
     }
 }
 
-// Initialize ScrollStack
 document.addEventListener('DOMContentLoaded', () => {
-    // Check if on the page with services
     if (document.querySelector('.services-grid')) {
-        new ScrollStack({
-            itemStackDistance: 30,
-            itemScale: 0.03,
-            baseScale: 0.85,
-            stackPosition: '20%'
-        });
+        new ScrollStack();
     }
 });

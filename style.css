@@ -1661,41 +1661,47 @@ img {
 @media (max-width: 992px) {
     .services-grid {
         position: relative;
-        padding-top: 5vh;
-        padding-bottom: 10vh;
-        /* Space to scroll past */
-        /* min-height: 150vh;  Make it tall enough to scroll through */
-        display: block;
-        /* Override grid behavior */
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        /* Gap handled by margin or sticky offset */
+        padding-bottom: 50px;
     }
 
     .service-card {
-        transform-origin: top center;
-        will-change: transform, filter;
-        backface-visibility: hidden;
-        transform-style: preserve-3d;
+        position: sticky;
+        top: 20vh;
+        /* Fallback */
         width: 100%;
-        margin-bottom: 100px;
-        /* Space between cards in flow before stack takes over */
-        /* height: auto; */
-        min-height: 380px;
-        position: relative;
-        /* Improve mobile performance */
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-        box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-        /* Enhance shadow for stacking depth */
-        /* Ensure background is opaque */
+        margin-bottom: 30vh;
+        /* Spacing ensuring we can scroll enough to see the next card */
+        /* min-height ensures consistent sizing */
+        min-height: 400px;
         background: var(--white);
+        transform-origin: top center;
+        will-change: transform;
         z-index: 1;
+        /* Remove transform transition to prevent fighting with JS */
+        transition: box-shadow 0.3s ease;
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
+        /* Shadow on top to distinguish from card below */
+    }
+
+    /* Assign z-indices so earlier cards are behind later cards? 
+       Actually with sticky, later elements naturally cover earlier ones. 
+       But we want earlier ones to stay visible underneath? 
+       Yes, sticky stack behavior: 1 sticks, 2 slides over 1.
+       So naturally 2 is z-index higher than 1 in DOM order. 
+       This works automatically.
+    */
+
+    /* Adjust padding for the last card so it doesn't leave a huge gap */
+    .service-card:last-child {
+        margin-bottom: 0;
     }
 
     .scroll-stack-end {
-        width: 100%;
-        height: 1px;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        z-index: -1;
+        display: none;
+        /* Not needed for sticky implementation */
     }
 }
