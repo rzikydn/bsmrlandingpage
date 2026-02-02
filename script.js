@@ -208,7 +208,7 @@ function initScrollReveal() {
     const targets = [
         { selector: '.program-info .info-content > p:first-of-type', options: { baseRotation: 2, blurStrength: 3 } },
         { selector: '.program-info .desktop-only-text', options: { baseRotation: 2, blurStrength: 3 } },
-        { selector: '.about-description > p:first-of-type', options: { baseRotation: 2, blurStrength: 3 } },
+        { selector: '.about-description > p:first-of-type', options: { baseRotation: 2, blurStrength: 3, start: 'top 95%', end: 'top 40%' } },
         { selector: '.registration .section-subtitle', options: { baseRotation: 2, blurStrength: 3, start: 'top 95%', end: 'top 60%' } },
         { selector: '.program-info .section-title', options: { baseRotation: 3, blurStrength: 4 } },
         { selector: '.about .section-tag', options: { baseRotation: 3, blurStrength: 4 } },
