@@ -1679,28 +1679,26 @@ img {
     }
 
     .hero-title {
-        font-size: 1.7rem;
-        /* Increased for better visibility */
+        font-size: clamp(1.5rem, 7.8vw, 2rem);
         line-height: 1.0;
-        /* Tightened gap */
+        font-weight: 800;
+        width: 100%;
+        display: block;
     }
 
     .title-top {
         display: block;
         white-space: nowrap;
-        margin-bottom: 5px;
-        /* Small consistent gap */
-        margin-top: 0;
-        /* Removed extra top space */
-        transform: translateX(-6px);
+        margin-bottom: 0px;
+        transform: translateX(0);
     }
 
     .hero-title .highlight {
-        font-size: 1.7rem;
-        /* Matched size */
+        font-size: 1.1em;
+        /* Sedikit lebih besar untuk penekanan */
         display: block;
-        margin-top: -10px;
-        /* Adjusted for larger font */
+        white-space: nowrap;
+        margin-top: -21px;
     }
 
     /* Adjust Dropdown for Mobile */
