@@ -1944,3 +1944,174 @@ img {
         display: none;
     }
 }
+
+/* Subpage Styles */
+.subpage-hero {
+    height: 40vh;
+    min-height: 250px;
+    background: linear-gradient(rgba(13, 71, 161, 0.85), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    position: relative;
+    color: var(--white);
+    margin-top: 80px;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.subpage-hero .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.subpage-title {
+    font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+}
+
+.subpage-subtitle {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 700px;
+    margin: 0 auto 25px auto;
+    line-height: 1.6;
+    font-weight: 400;
+}
+
+.subpage-breadcrumb {
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.subpage-breadcrumb a {
+    color: var(--white);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.subpage-breadcrumb a:hover {
+    color: var(--accent-gold);
+}
+
+.subpage-main-content {
+    padding: 100px 0;
+    background-color: var(--white);
+}
+
+.content-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.subpage-section {
+    margin-bottom: 60px;
+}
+
+.subpage-section h2 {
+    color: var(--primary-blue);
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.subpage-section h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background-color: var(--primary-red);
+    border-radius: 2px;
+}
+
+.subpage-section p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #4B5563;
+    margin-bottom: 20px;
+    text-align: justify;
+}
+
+.subpage-section ul {
+    margin-bottom: 20px;
+    padding-left: 20px;
+}
+
+.subpage-section ul li {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #4B5563;
+    margin-bottom: 10px;
+    list-style-type: none;
+    position: relative;
+    padding-left: 25px;
+}
+
+.subpage-section ul li::before {
+    content: '\f058';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    color: var(--primary-blue);
+}
+
+/* Specific Page: Visi & Misi Grid */
+.visi-misi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.misi-card {
+    background: var(--off-white);
+    padding: 30px;
+    border-radius: 12px;
+    border-left: 5px solid var(--primary-blue);
+    transition: var(--transition);
+}
+
+.misi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+.misi-card h3 {
+    font-size: 1.4rem;
+    color: var(--primary-blue);
+    margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+    .subpage-hero {
+        height: 30vh;
+        min-height: 180px;
+    }
+
+    .subpage-title {
+        font-size: 2rem;
+    }
+
+    .visi-misi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .subpage-main-content {
+        padding: 60px 0;
+    }
+}
