@@ -172,12 +172,19 @@ if (lenis) {
 
 // Initialize when the DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    // Force scroll to top on refresh
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+
     initScrollReveal();
     initCountUp();
 
     // Refresh everything after initial load
     window.addEventListener('load', () => {
         ScrollTrigger.refresh();
+        window.scrollTo(0, 0); // Double ensure top position
     });
 });
 
