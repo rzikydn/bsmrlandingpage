@@ -1954,21 +1954,24 @@ img {
     color: var(--white);
     margin-top: 80px;
     padding: 0 20px;
-    text-align: center;
+    text-align: left;
 }
 
 .subpage-hero .container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     width: 100%;
+    padding-left: 18px;
+    /* Disesuaikan agar pas sejajar dengan logo */
 }
 
 .subpage-title {
     font-size: clamp(2.2rem, 4.5vw, 3.5rem);
     font-weight: 800;
     line-height: 1.1;
+    margin-bottom: 15px;
     margin-bottom: 15px;
     text-transform: uppercase;
     letter-spacing: -0.02em;
@@ -1978,7 +1981,7 @@ img {
     font-size: 1.1rem;
     color: rgba(255, 255, 255, 0.9);
     max-width: 700px;
-    margin: 0 auto 25px auto;
+    margin: 0 0 25px 0;
     line-height: 1.6;
     font-weight: 400;
 }
@@ -2005,6 +2008,7 @@ img {
 .subpage-main-content {
     padding: 100px 0;
     background-color: var(--white);
+    min-height: 50vh;
 }
 
 .content-wrapper {
@@ -2095,10 +2099,297 @@ img {
     margin-bottom: 15px;
 }
 
+/* Visi Misi Modern Cards (Fixed Style from Ref) */
+.vm-cards-grid {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    padding: 60px 0;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.vm-card-modern {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: var(--transition);
+}
+
+.vm-card-modern:hover {
+    transform: translateY(-10px);
+}
+
+/* Bagian Atas - Kartu Putih */
+.vm-card-top {
+    background: var(--white);
+    padding: 50px 40px;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.vm-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    background: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+    border: 1px solid #eee;
+}
+
+.vm-card-top h3 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #333;
+    letter-spacing: 1px;
+}
+
+.vm-card-top p {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* Bagian Bawah - Base Berwarna (Bentuk Petal) */
+.vm-card-bottom {
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 2rem;
+    font-weight: 800;
+    position: relative;
+    margin-top: -15px;
+    /* Overlap sedikit */
+    padding-top: 15px;
+    z-index: 1;
+}
+
+/* Bentuk Ekor/Petal di Bawah */
+.vm-card-bottom::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-top: none;
+    border-radius: 0 0 20px 20px;
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 75% 70%, 75% 100%, 25% 100%, 25% 70%, 0 70%);
+    z-index: -1;
+}
+
+/* Skema Warna 01 (Red/Orange untuk Misi) */
+.card-01 .vm-card-bottom::before {
+    background-color: #F5A623;
+}
+
+.card-01 .vm-icon-wrapper {
+    color: #F5A623;
+}
+
+/* Skema Warna 02 (Blue untuk Visi) */
+.card-02 .vm-card-bottom::before {
+    background-color: #3B82F6;
+}
+
+.card-02 .vm-icon-wrapper {
+    color: #3B82F6;
+}
+
+/* Central Illustration for Visi & Misi Page */
+.bsmr-central-illustration {
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+.bsmr-illu-container {
+    width: 100%;
+    transform: translate(-330px, -80px);
+    /* Posisi asli yang diinginkan user */
+    z-index: 10;
+}
+
+.bsmr-illu-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 30px;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.1);
+    background-color: var(--white);
+    padding: 20px;
+}
+
+.bsmr-side-text {
+    position: absolute;
+    left: 210px;
+    top: 50%;
+    transform: translateY(-280px);
+    /* Dinaikkan sedikit sesuai permintaan */
+    width: 600px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.vm-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.vm-icon-circle {
+    width: 50px;
+    height: 50px;
+    background-color: #008fa0;
+    /* Teal color from ref */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 143, 160, 0.3);
+}
+
+.side-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #000;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+}
+
+.side-subtitle {
+    font-size: 1rem;
+    color: #555;
+    font-weight: 400;
+    max-width: 450px;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .bsmr-central-illustration {
+        display: flex;
+        flex-direction: column-reverse;
+        /* Teks di atas, gambar di bawah sesuai ref */
+        align-items: center;
+        gap: 30px;
+        padding: 40px 20px;
+        max-width: 100%;
+    }
+
+    .bsmr-illu-container {
+        transform: none;
+        /* Reset geser kiri */
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .bsmr-side-text {
+        position: static;
+        /* Lepas dari posisi melayang */
+        width: 100%;
+        transform: none;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        text-align: center;
+        align-items: center;
+    }
+
+    .vm-item {
+        align-items: center;
+    }
+
+    .side-subtitle {
+        margin: 0 auto;
+    }
+
+    .bsmr-central-illustration img {
+        border-radius: 20px;
+        padding: 10px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.mission-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mission-item {
+    position: relative;
+    padding-left: 0;
+}
+
+@media (max-width: 992px) {
+    .visi-misi-split {
+        flex-direction: column;
+        gap: 50px;
+    }
+
+    .split-image,
+    .split-text {
+        width: 100%;
+    }
+
+    .image-card {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .split-text {
+        text-align: center;
+        align-items: center;
+    }
+
+    .vision-section,
+    .mission-section {
+        align-items: center;
+    }
+}
+
 @media (max-width: 768px) {
     .subpage-hero {
         height: 30vh;
         min-height: 180px;
+        text-align: center;
+    }
+
+    .subpage-hero .container {
+        align-items: center;
+        padding-left: 20px;
+    }
+
+    .subpage-subtitle {
+        margin: 0 auto 15px auto;
+    }
+
+    .subpage-title {
+        margin-left: 0;
     }
 
     .subpage-title {
