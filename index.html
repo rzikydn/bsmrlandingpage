@@ -373,20 +373,51 @@
                                     <div class="back-section-title"><i class="fas fa-user-graduate"></i> Persyaratan
                                         Dasar</div>
                                     <ul>
-                                        <li><i class="fas fa-info-circle"></i> Min. Pendidikan SMU/sederajat &
-                                            pengalaman kerja min. 3 tahun di bidang terkait.</li>
-                                        <li><i class="fas fa-info-circle"></i> Atau memiliki Sertifikat Kompetensi
-                                            Jenjang 4.</li>
+                                        <li><i class="fas fa-info-circle"></i> Memiliki sertifikat kompetensi
+                                            Kualifikasi 4 yang masih berlaku & pengalaman kerja min. 3 tahun di industri
+                                            keuangan; atau</li>
+                                        <li><i class="fas fa-info-circle"></i> Memiliki sertifikat kompetensi
+                                            Kualifikasi 4 yang masih berlaku & sertifikat pelatihan berbasis kompetensi
+                                            Kualifikasi 5.</li>
                                     </ul>
                                 </div>
                                 <div class="back-section">
                                     <div class="back-section-title"><i class="fas fa-file-alt"></i> Persyaratan Dokumen
                                     </div>
+
+                                    <div class="back-sub-title">Jalur Portofolio:</div>
                                     <ul>
-                                        <li><i class="fas fa-clipboard-check"></i> Portofolio: Ijazah, Surat Ket. Kerja,
-                                            Referensi Jabatan, Laporan Analisis, CV, KTP.</li>
-                                        <li><i class="fas fa-clipboard-check"></i> Observasi: Ijazah, Sertifikat
-                                            Pelatihan Madya, KTP, CV, Pasfoto.</li>
+                                        <li><i class="fas fa-check"></i> Sertifikat Kompetensi Jenjang sebelumnya yang
+                                            berlaku</li>
+                                        <li><i class="fas fa-check"></i> Ijazah Pendidikan terakhir {min SMU/sederajat}
+                                        </li>
+                                        <li><i class="fas fa-check"></i> Surat Ket. Kerja SDM {min 3 thn di Ind.
+                                            Keuangan}</li>
+                                        <li><i class="fas fa-check"></i> Surat Referensi {kertas kop & ttd Pimpinan}
+                                        </li>
+                                        <li><i class="fas fa-check"></i> Sertifikat Program Pemeliharaan Sertifikasi
+                                        </li>
+                                        <li><i class="fas fa-check"></i> Portofolio Laporan Hasil Kerja {LK/Lainnya}
+                                        </li>
+                                        <li><i class="fas fa-check"></i> CV Lengkap {Identitas, Pendidikan, Pekerjaan,
+                                            dll}</li>
+                                        <li><i class="fas fa-check"></i> KTP (WNI) / Paspor (WNA)</li>
+                                        <li><i class="fas fa-check"></i> Pasfoto berwarna terkini</li>
+                                        <li><i class="fas fa-check"></i> Sertifikat Pelatihan berbasis Kompetensi</li>
+                                    </ul>
+
+                                    <div class="back-sub-title">Jalur Observasi:</div>
+                                    <ul>
+                                        <li><i class="fas fa-eye"></i> Sertifikat Kompetensi Jenjang sebelumnya yang
+                                            berlaku</li>
+                                        <li><i class="fas fa-eye"></i> Ijazah Pendidikan terakhir {min SMU/sederajat}
+                                        </li>
+                                        <li><i class="fas fa-eye"></i> Sertifikat Program Pemeliharaan Sertifikasi</li>
+                                        <li><i class="fas fa-eye"></i> Sertifikat Pelatihan berbasis Kompetensi
+                                            {Provider Terdaftar}</li>
+                                        <li><i class="fas fa-eye"></i> Surat Keterangan Kerja dari SDM</li>
+                                        <li><i class="fas fa-eye"></i> KTP (WNI) / Paspor (WNA)</li>
+                                        <li><i class="fas fa-eye"></i> CV Lengkap & Pasfoto berwarna terkini</li>
                                     </ul>
                                 </div>
                             </div>
@@ -398,19 +429,37 @@
                     </div>
                 </div>
                 <!-- Level 6 -->
-                <div class="service-card">
+                <div class="service-card" id="card-level-6">
                     <div class="card-inner">
                         <div class="card-front">
                             <div class="card-image-box">
-                                <img src="images/jenjang_5.png" alt="Jenjang 6">
+                                <img src="images/jenjang_5.png" alt="Jenjang 6" class="img-regular">
+                                <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=800&q=80"
+                                    alt="Jenjang 6 Fast Track" class="img-fast-track">
                             </div>
                             <div class="card-content">
                                 <div class="card-header">
                                     <h3>Jenjang 6</h3>
+                                    <!-- Toggle Switch -->
+                                    <div class="ft-switch" onclick="toggleFastTrack(this)">
+                                        <div class="ft-knob">REGULAR</div>
+                                    </div>
                                 </div>
-                                <p class="card-category">Strategis . Senior Management</p>
-                                <p class="card-description">Tingkat lanjut untuk manajemen senior, fokus pada kebijakan
-                                    strategis dan manajemen permodalan.</p>
+
+                                <!-- Regular Content -->
+                                <div class="content-regular">
+                                    <p class="card-category">Strategis . Senior Management</p>
+                                    <p class="card-description">Tingkat lanjut untuk manajemen senior, fokus pada
+                                        kebijakan strategis dan manajemen permodalan.</p>
+                                </div>
+
+                                <!-- Fast Track Content -->
+                                <div class="content-fast-track">
+                                    <p class="card-category">Executive . Direct Entry</p>
+                                    <p class="card-description">Jalur akselerasi khusus bagi eksekutif berpengalaman
+                                        dengan rekam jejak kepemimpinan strategis.</p>
+                                </div>
+
                                 <div class="card-footer">
                                     <a href="javascript:void(0)" class="btn-detail"
                                         onclick="this.closest('.service-card').classList.add('is-flipped')">Detail
@@ -428,20 +477,53 @@
                                     <div class="back-section-title"><i class="fas fa-user-graduate"></i> Persyaratan
                                         Dasar</div>
                                     <ul>
-                                        <li><i class="fas fa-info-circle"></i> Min. Pendidikan S1 & pengalaman
-                                            manajerial min. 5 tahun di industri keuangan.</li>
-                                        <li><i class="fas fa-info-circle"></i> Memiliki Sertifikat Kompetensi Jenjang 5
-                                            (Manajer Risiko).</li>
+                                        <li><i class="fas fa-info-circle"></i> Memiliki sertifikat kompetensi
+                                            Kualifikasi 5 yang masih berlaku & pengalaman kerja min. 4 tahun di industri
+                                            keuangan; atau</li>
+                                        <li><i class="fas fa-info-circle"></i> Memiliki sertifikat kompetensi
+                                            Kualifikasi 5 yang masih berlaku & sertifikat pelatihan berbasis kompetensi
+                                            Kualifikasi 6.</li>
                                     </ul>
                                 </div>
                                 <div class="back-section">
                                     <div class="back-section-title"><i class="fas fa-file-alt"></i> Persyaratan Dokumen
                                     </div>
+
+                                    <div class="back-sub-title">Jalur Portofolio:</div>
                                     <ul>
-                                        <li><i class="fas fa-clipboard-check"></i> Portofolio: Ijazah S1/S2, SK
-                                            Pengangkatan Jabatan, Laporan Strategis, CV, KTP.</li>
-                                        <li><i class="fas fa-clipboard-check"></i> Observasi: Ijazah, Sertifikat
-                                            Keahlian Utama, KTP, CV, Pasfoto.</li>
+                                        <li><i class="fas fa-check"></i> Sertifikat Kompetensi Jenjang sebelumnya yang
+                                            berlaku</li>
+                                        <li><i class="fas fa-check"></i> Ijazah Pendidikan terakhir {min SMU/sederajat}
+                                        </li>
+                                        <li><i class="fas fa-check"></i> Surat Ket. Kerja SDM {min 4 thn di Ind.
+                                            Keuangan}</li>
+                                        <li><i class="fas fa-check"></i> Surat Referensi {kertas kop & ttd Pimpinan}
+                                        </li>
+                                        <li><i class="fas fa-check"></i> Sertifikat Program Pemeliharaan Sertifikasi
+                                        </li>
+                                        <li><i class="fas fa-check"></i> Portofolio Laporan Hasil Kerja {Audit/Lainnya}
+                                        </li>
+                                        <li><i class="fas fa-check"></i> CV Lengkap {Identitas, Pendidikan, Pekerjaan,
+                                            dll}</li>
+                                        <li><i class="fas fa-check"></i> Kartu Identitas {WNI: KTP, WNA: Paspor}</li>
+                                        <li><i class="fas fa-check"></i> Pasfoto berwarna terkini</li>
+                                        <li><i class="fas fa-check"></i> Sertifikat Pelatihan berbasis Kompetensi</li>
+                                    </ul>
+
+                                    <div class="back-sub-title">Jalur Observasi:</div>
+                                    <ul>
+                                        <li><i class="fas fa-eye"></i> Sertifikat Kompetensi Jenjang sebelumnya yang
+                                            berlaku</li>
+                                        <li><i class="fas fa-eye"></i> Ijazah Pendidikan terakhir {min SMU/sederajat}
+                                        </li>
+                                        <li><i class="fas fa-eye"></i> Sertifikat Program Pemeliharaan Sertifikasi</li>
+                                        <li><i class="fas fa-eye"></i> Surat Keterangan Kerja dari SDM</li>
+                                        <li><i class="fas fa-eye"></i> Sertifikat Pelatihan berbasis Kompetensi
+                                            {Provider Terdaftar}</li>
+                                        <li><i class="fas fa-eye"></i> Kartu Identitas {WNI: KTP, WNA: Paspor}</li>
+                                        <li><i class="fas fa-eye"></i> CV Lengkap {Identitas, Pendidikan, Pekerjaan,
+                                            dll}</li>
+                                        <li><i class="fas fa-eye"></i> Pasfoto berwarna terkini</li>
                                     </ul>
                                 </div>
                             </div>
@@ -453,19 +535,37 @@
                     </div>
                 </div>
                 <!-- Level 7 -->
-                <div class="service-card">
+                <div class="service-card" id="card-level-7">
                     <div class="card-inner">
                         <div class="card-front">
                             <div class="card-image-box">
-                                <img src="images/jenjang_6.png" alt="Jenjang 7">
+                                <img src="images/jenjang_6.png" alt="Jenjang 7" class="img-regular">
+                                <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80"
+                                    alt="Jenjang 7 Fast Track" class="img-fast-track">
                             </div>
                             <div class="card-content">
                                 <div class="card-header">
                                     <h3>Jenjang 7</h3>
+                                    <!-- Toggle Switch -->
+                                    <div class="ft-switch" onclick="toggleFastTrack(this)">
+                                        <div class="ft-knob">REGULAR</div>
+                                    </div>
                                 </div>
-                                <p class="card-category">Governance . Board Level</p>
-                                <p class="card-description">Sertifikasi tingkat eksekutif untuk Direksi dan Komisaris,
-                                    mencakup governance dan strategi korporasi.</p>
+
+                                <!-- Regular Content -->
+                                <div class="content-regular">
+                                    <p class="card-category">Governance . Board Level</p>
+                                    <p class="card-description">Sertifikasi tingkat eksekutif untuk Direksi dan
+                                        Komisaris, mencakup governance dan strategi korporasi.</p>
+                                </div>
+
+                                <!-- Fast Track Content -->
+                                <div class="content-fast-track">
+                                    <p class="card-category">Direct Entry for Executives</p>
+                                    <p class="card-description">Akses langsung untuk Direksi/Komisaris tanpa syarat
+                                        sertifikat sebelumnya, berdasarkan pengalaman strategis.</p>
+                                </div>
+
                                 <div class="card-footer">
                                     <a href="javascript:void(0)" class="btn-detail"
                                         onclick="this.closest('.service-card').classList.add('is-flipped')">Detail

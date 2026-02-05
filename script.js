@@ -428,3 +428,29 @@ document.addEventListener('DOMContentLoaded', () => {
         new ScrollStack();
     }
 });
+
+/**
+ * Fast Track Toggle Function
+ * Handles the switch between Regular and Fast Track modes on service cards.
+ */
+function toggleFastTrack(element) {
+    // Prevent the click from bubbling if it's inside a clickable card area
+    if (event) event.stopPropagation();
+
+    element.classList.toggle('active');
+    const card = element.closest('.service-card');
+
+    if (card) {
+        card.classList.toggle('fast-track-mode');
+
+        // Update Knob Text
+        const knob = element.querySelector('.ft-knob');
+        if (knob) {
+            if (element.classList.contains('active')) {
+                knob.textContent = 'FAST TRACK';
+            } else {
+                knob.textContent = 'REGULAR';
+            }
+        }
+    }
+}

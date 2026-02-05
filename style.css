@@ -372,6 +372,63 @@
     }
 }
 
+/* Fast Track Toggle Switch */
+.ft-switch-container {
+    display: flex;
+    align-items: center;
+}
+
+/* Old ft-switch removed - styling consolidated near card-header */
+
+
+/* Content Visibility Logic */
+.card-image-box img {
+    transition: opacity 0.3s ease;
+}
+
+.img-fast-track {
+    display: none;
+}
+
+.content-fast-track {
+    display: none;
+}
+
+/* Fast Track Mode Active State */
+.service-card.fast-track-mode .img-regular {
+    display: none;
+}
+
+.service-card.fast-track-mode .img-fast-track {
+    display: block;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.service-card.fast-track-mode .content-regular {
+    display: none;
+}
+
+.service-card.fast-track-mode .content-fast-track {
+    display: block;
+    animation: slideUpFade 0.4s ease-out;
+}
+
+.service-card.fast-track-mode .card-category {
+    color: var(--accent-gold) !important;
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @keyframes clickRays {
 
     0%,
@@ -1283,7 +1340,8 @@ img {
 }
 
 .card-content {
-    padding: 0 25px 25px 25px;
+    padding: 0 20px 25px 20px;
+    /* Reduced padding for more horizontal space */
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -1291,35 +1349,98 @@ img {
 
 .card-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    /* Changed from space-between to flex-start for tighter packing */
     align-items: center;
     margin-bottom: 5px;
+    gap: 8px;
+    /* Reduced gap */
 }
 
 .card-header h3 {
     font-size: 1.4rem;
     font-weight: 700;
     color: var(--text-dark);
+    white-space: nowrap;
+    /* Prevent title from wrapping */
 }
 
-.card-rating {
+/* Fast Track Toggle Switch */
+.ft-switch-container {
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: 0.9rem;
-    color: #4B5563;
+    margin-left: auto;
+    /* Pushes to the right */
 }
 
-.card-rating i {
-    color: #FBBF24;
-    /* Star Gold */
+.ft-switch {
+    position: relative;
+    display: flex;
+    width: 95px;
+    /* Reduced width to fit on one line */
+    height: 28px;
+    background: #475569;
+    border-radius: 20px;
+    cursor: pointer;
+    align-items: center;
+    padding: 2px;
+    transition: all 0.4s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin-left: 0;
+    /* Managed by gap */
+    flex-shrink: 0;
 }
 
-.card-category {
-    font-size: 0.9rem;
-    color: #9CA3AF;
-    margin-bottom: 20px;
+.ft-switch.active {
+    background: var(--primary-blue);
 }
+
+.ft-knob {
+    position: absolute;
+    left: 2px;
+    width: 60px;
+    height: 24px;
+    background: #f8fafc;
+    border-radius: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    font-weight: 800;
+    color: #475569;
+    text-transform: uppercase;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+}
+
+.ft-switch.active .ft-knob {
+    left: calc(100% - 62px);
+    color: var(--primary-blue);
+}
+
+@media (max-width: 480px) {
+    .card-header h3 {
+        font-size: 1.2rem;
+        /* Slightly smaller text on mobile */
+    }
+
+    .ft-switch {
+        width: 85px;
+        /* Even more compact on very small screens */
+    }
+
+    .ft-knob {
+        width: 55px;
+        font-size: 0.5rem;
+    }
+
+    .ft-switch.active .ft-knob {
+        left: calc(100% - 57px);
+    }
+}
+
+/* Icons removed */
 
 .card-description {
     font-size: 0.95rem;
