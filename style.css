@@ -2027,9 +2027,9 @@ img {
     }
 
     .services {
-        padding-top: 70px;
-        padding-bottom: 250px !important;
-        /* Increased significantly to push registration section down */
+        padding-top: 60px;
+        /* More room for title */
+        padding-bottom: 0 !important;
         margin-top: -60px;
     }
 
@@ -2038,30 +2038,44 @@ img {
         display: flex;
         flex-direction: column;
         gap: 0;
-        margin-top: -110px;
-        /* Further pull cards up to eliminate excess gap */
-        padding-bottom: 0;
+        margin-top: 40px;
+        /* Pull cards up more to close gap with text */
+        padding-bottom: 5vh;
+        /* Reduced gap significantly */
     }
 
     .service-card {
-        position: relative;
+        position: sticky;
+        top: 12vh;
+        /* Keep it higher at the top */
         width: 100%;
         max-width: 400px;
-        margin: 0 auto 30px auto;
-        height: 550px;
-        /* Slightly shorter on mobile */
+        margin: 0 auto 50px auto;
+        height: 590px;
         perspective: 1000px;
         background: transparent;
         z-index: 1;
+        transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .card-image-box {
+        height: 270px;
+        /* Reduced height to stop image looking 'zoomed' */
     }
 
     .registration {
-        padding-top: 120px !important;
-        /* Increased to provide safe distance */
+        padding-top: 20px !important;
+        /* Minimal gap after cards */
+        background: var(--white);
+        position: relative;
+        z-index: 20;
+        /* Ensure it stays above the sticky stack */
     }
 
     .scroll-stack-end {
-        display: none;
+        display: block;
+        height: 10px;
+        width: 100%;
     }
 }
 

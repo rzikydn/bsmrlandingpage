@@ -294,21 +294,22 @@ class ScrollStack {
         this.options = Object.assign({
             wrapperSelector: '.services-grid',
             cardSelector: '.service-card',
-            stackOffset: 20, // vh
-            cardSpacing: 30, // px
-            scaleSpread: 0.05, // Scale reduction per card
-            baseScale: 1
+            stackPosition: 0.12, // 12% from top (matches CSS top: 12vh)
+            itemScale: 0.05,     // Scale reduction per card
+            itemStackDistance: 30, // px between stacked cards
+            baseScale: 0.9       // Minimum scale for bottom cards
         }, options);
 
         this.wrapper = document.querySelector(this.options.wrapperSelector);
         this.cards = [];
         this.isActive = false;
+        this.lastTransforms = new Map();
 
         if (this.wrapper) {
             this.cards = Array.from(this.wrapper.querySelectorAll(this.options.cardSelector));
         }
 
-        this.onScroll = this.onScroll.bind(this);
+        this.update = this.update.bind(this);
         this.init();
     }
 
@@ -329,83 +330,94 @@ class ScrollStack {
 
     enable() {
         this.isActive = true;
-
-        // Setup initial sticky positions
         this.cards.forEach((card, i) => {
-            // Each card sticks slightly lower than the previous to create the "stack" look
-            const topOffset = `calc(${this.options.stackOffset}vh + ${i * this.options.cardSpacing}px)`;
-            card.style.top = topOffset;
+            card.style.willChange = 'transform, filter';
+            card.style.transformOrigin = 'top center';
+
+            // Increment top offset for each card to create the stack look
+            const topOffset = (window.innerHeight * this.options.stackPosition) + (i * this.options.itemStackDistance);
+            card.style.top = `${topOffset}px`;
         });
 
-        window.addEventListener('scroll', this.onScroll, { passive: true });
-        this.onScroll(); // Initial calculate
+        // Use the global Lenis for updates if available
+        if (typeof lenis !== 'undefined') {
+            lenis.on('scroll', this.update);
+        } else {
+            window.addEventListener('scroll', this.update);
+        }
+
+        this.update();
     }
 
     disable() {
         this.isActive = false;
-        window.removeEventListener('scroll', this.onScroll);
+        if (typeof lenis !== 'undefined') {
+            lenis.off('scroll', this.update);
+        } else {
+            window.removeEventListener('scroll', this.update);
+        }
 
         this.cards.forEach(card => {
-            card.style.top = '';
             card.style.transform = '';
-            card.style.opacity = '';
             card.style.filter = '';
+            card.style.top = '';
         });
+        this.lastTransforms.clear();
     }
 
-    onScroll() {
+    update() {
         if (!this.isActive) return;
 
-        // Optimization: Use requestAnimationFrame only if needed, 
-        // but for scroll-linked effects, raw listener is often fine if logic is cheap.
-        // We will use a simple flag to throttle if needed, but here we keep it direct for responsiveness.
+        const scrollTop = window.scrollY;
+        const containerHeight = window.innerHeight;
+        const stackPositionPx = containerHeight * this.options.stackPosition;
 
         this.cards.forEach((card, i) => {
-            // We only scale cards that are effectively "covered" by the next card.
-            // Or rather, as a card moves up to its sticky position, it stays at scale 1.
-            // As the Next Card (i+1) comes up and covers it, the current card (i) scales down.
+            const cardRect = card.getBoundingClientRect();
+            // We use the card's position relative to the viewport to calculate overlap
+            // Specifically, when a card's top reaches its sticky position
+
+            const cardTop = card.offsetTop;
+            const triggerStart = cardTop - stackPositionPx - (this.options.itemStackDistance * i);
+
+            // Progress is how much the card has been "scrolled past" its sticky trigger
+            // But for a stack, we want to know how many cards are ABOVE it.
+            // Actually, the simpler "Hybrid" logic is more robust for vanilla JS:
+            // Scale the card based on how much the NEXT card has covered it.
 
             const nextCard = this.cards[i + 1];
             if (!nextCard) return;
 
-            const cardRect = card.getBoundingClientRect();
             const nextRect = nextCard.getBoundingClientRect();
+            const currentRect = card.getBoundingClientRect();
 
-            // Calculate how much the next card has covered the current card
-            // We know current card is sticky at 'top'.
-            // nextCard comes from bottom.
-            // Distance between them:
-            const distance = nextRect.top - cardRect.top;
-
-            // Define a range where scaling happens. 
-            // e.g., when distance is large (next card far away), scale is 1.
-            // when distance is small (next card overlapping), scale reduces.
-
-            const windowHeight = window.innerHeight;
-            const triggerDistance = windowHeight * 0.5; // Start scaling when next card is close
+            // Distance between the top of this card and the top of the next card
+            const distance = nextRect.top - currentRect.top;
+            const triggerDistance = 400; // Distance at which scaling starts
 
             let progress = 1 - (distance / triggerDistance);
-            progress = Math.max(0, Math.min(1, progress)); // Clamp 0-1
-
-            // progress 0 = next card far away
-            // progress 1 = next card fully on top (or close enough)
+            progress = Math.max(0, Math.min(1, progress));
 
             if (progress > 0) {
-                const targetScale = this.options.baseScale - (this.options.scaleSpread * (this.cards.length - i));
-                // Actually simpler: just scale down a bit.
-                // Let's say max scale down is 0.9.
-                const scale = 1 - (progress * 0.05); // Scale down by 5% max per overlap
+                const scale = 1 - (progress * 0.05); // Scale down by 5%
+                const blur = progress * 2; // Subtle blur
 
-                // blur?
-                const blur = progress * 2; // 0 to 2px blur
+                const transform = `scale(${scale})`;
+                const filter = `blur(${blur}px)`;
 
-                card.style.transform = `scale(${scale})`;
-                card.style.filter = `blur(${blur}px)`;
-                // opacity?
-                // card.style.opacity = 1 - (progress * 0.2); 
+                if (this.lastTransforms.get(i) !== transform) {
+                    card.style.transform = transform;
+                    card.style.filter = filter;
+                    card.style.opacity = 1 - (progress * 0.1); // Slight fade
+                    this.lastTransforms.set(i, transform);
+                }
             } else {
-                card.style.transform = 'scale(1)';
-                card.style.filter = 'none';
+                if (this.lastTransforms.get(i) !== 'scale(1)') {
+                    card.style.transform = 'scale(1)';
+                    card.style.filter = 'none';
+                    card.style.opacity = '1';
+                    this.lastTransforms.set(i, 'scale(1)');
+                }
             }
         });
     }
