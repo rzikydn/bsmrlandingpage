@@ -1107,19 +1107,116 @@ img {
 }
 
 .service-card {
-    background: var(--white);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    transition: var(--transition);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: transparent;
+    perspective: 1000px;
+    height: 600px;
+    /* Fixed height for flip effect consistency */
 }
 
-.service-card:hover {
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.service-card.is-flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 20px;
+    background: var(--white);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    padding: 30px;
+    background: linear-gradient(135deg, #fdfdfd 0%, #f5f7fa 100%);
+    display: flex;
+    flex-direction: column;
+}
+
+.back-header {
+    border-bottom: 2px solid var(--primary-red);
+    padding-bottom: 12px;
+    margin-bottom: 15px;
+}
+
+.back-header h4 {
+    color: var(--primary-blue);
+    font-size: 1.1rem;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.back-info {
+    flex-grow: 1;
+}
+
+.back-info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.back-info li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.88rem;
+    color: var(--text-dark);
+}
+
+.back-info li i {
+    color: var(--primary-red);
+    margin-top: 3px;
+    font-size: 0.8rem;
+}
+
+.btn-back {
+    margin-top: auto;
+    background: #f1f5f9;
+    border: none;
+    color: #475569;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-back:hover {
+    background: #e2e8f0;
+    color: var(--text-dark);
+}
+
+.service-card:not(.is-flipped):hover .card-inner {
     transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.service-card:not(.is-flipped):hover .card-front {
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
 }
 
 .card-image-box {
@@ -1187,10 +1284,33 @@ img {
 .card-footer {
     margin-top: auto;
     display: flex;
-    justify-content: flex-start;
-    /* Align button to the left */
+    flex-direction: column;
+    gap: 15px;
     border-top: 1px solid #F3F4F6;
     padding-top: 20px;
+}
+
+.btn-detail {
+    color: var(--primary-blue);
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+}
+
+.btn-detail:hover {
+    color: var(--primary-red);
+}
+
+.btn-detail i {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-detail:hover i {
+    transform: translateX(5px);
 }
 
 .btn-booking {
@@ -1226,9 +1346,7 @@ img {
     color: var(--white);
 }
 
-.btn-booking:hover i {
-    transform: translateX(5px);
-}
+
 
 /* Stats Section */
 .stats {
@@ -1904,9 +2022,15 @@ img {
 
 /* Scroll Stack Component (Mobile Only) */
 @media (max-width: 992px) {
-    .services.section {
-        padding-bottom: 40px;
-        /* Reduced from default 80px */
+    .stats {
+        padding-bottom: 120px !important;
+    }
+
+    .services {
+        padding-top: 70px;
+        padding-bottom: 250px !important;
+        /* Increased significantly to push registration section down */
+        margin-top: -60px;
     }
 
     .services-grid {
@@ -1914,28 +2038,26 @@ img {
         display: flex;
         flex-direction: column;
         gap: 0;
-        /* Minimize padding to remove gap completely */
+        margin-top: -110px;
+        /* Further pull cards up to eliminate excess gap */
         padding-bottom: 0;
     }
 
     .service-card {
-        position: sticky;
-        top: 20vh;
+        position: relative;
         width: 100%;
-        margin-bottom: 5vh;
-        /* Reduced significantly from 15vh to bring next section closer */
-        min-height: 400px;
-        background: var(--white);
-        transform-origin: top center;
-        will-change: transform;
+        max-width: 400px;
+        margin: 0 auto 30px auto;
+        height: 550px;
+        /* Slightly shorter on mobile */
+        perspective: 1000px;
+        background: transparent;
         z-index: 1;
-        transition: box-shadow 0.3s ease;
-        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
     }
 
-    /* Remove margin for the last card to prevent gap before next section */
-    .service-card:last-child {
-        margin-bottom: 0 !important;
+    .registration {
+        padding-top: 120px !important;
+        /* Increased to provide safe distance */
     }
 
     .scroll-stack-end {
@@ -1945,8 +2067,9 @@ img {
 
 /* Subpage Styles */
 .subpage-hero {
-    height: 40vh;
-    min-height: 250px;
+    height: 30vh;
+    /* Perkecil tinggi hero */
+    min-height: 200px;
     background: linear-gradient(rgba(13, 71, 161, 0.85), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
     display: flex;
     align-items: center;
@@ -1961,9 +2084,12 @@ img {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: flex-start;
+    /* Ubah ke flex-start agar bisa diatur posisinya */
+    padding-top: 50px;
+    /* Jarak dari atas untuk menaikkan teks */
     width: 100%;
-    padding-left: 18px;
+    padding-left: 20px;
     /* Disesuaikan agar pas sejajar dengan logo */
 }
 
@@ -1987,16 +2113,19 @@ img {
 }
 
 .subpage-breadcrumb {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.7);
     display: flex;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
+    margin-top: 10px;
+    margin-left: 12px;
+    /* Geser sedikit ke kanan */
 }
 
 .subpage-breadcrumb a {
-    color: var(--white);
+    color: rgba(255, 255, 255, 0.9);
     text-decoration: none;
     transition: var(--transition);
 }
@@ -2005,15 +2134,27 @@ img {
     color: var(--accent-gold);
 }
 
+.subpage-breadcrumb i {
+    font-size: 0.7rem;
+    opacity: 0.5;
+}
+
+.subpage-breadcrumb span {
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
 .subpage-main-content {
     padding: 100px 0;
-    background-color: var(--white);
+    background-color: #F5F5F5;
+    /* Light gray background to make white cards pop */
     min-height: 50vh;
 }
 
 .content-wrapper {
     max-width: 900px;
-    margin: 0 auto;
+    margin: 0;
+    /* Align to the left to match hero title */
 }
 
 .subpage-section {
@@ -2260,7 +2401,7 @@ img {
 .vm-icon-circle {
     width: 50px;
     height: 50px;
-    background-color: #008fa0;
+    background-color: #050a44;
     /* Teal color from ref */
     border-radius: 50%;
     display: flex;
@@ -2374,26 +2515,32 @@ img {
 
 @media (max-width: 768px) {
     .subpage-hero {
-        height: 30vh;
-        min-height: 180px;
-        text-align: center;
+        height: 25vh;
+        /* Perkecil tinggi hero di mobile */
+        min-height: 160px;
+        text-align: left;
     }
 
     .subpage-hero .container {
-        align-items: center;
+        align-items: flex-start;
         padding-left: 20px;
-    }
-
-    .subpage-subtitle {
-        margin: 0 auto 15px auto;
+        padding-top: 40px;
+        /* Naikkan posisi teks di mobile */
     }
 
     .subpage-title {
+        font-size: 1.8rem;
+        /* Sedikit lebih kecil agar proporsional */
+        text-align: left;
         margin-left: 0;
     }
 
-    .subpage-title {
-        font-size: 2rem;
+    .subpage-breadcrumb {
+        font-size: 0.85rem;
+        gap: 8px;
+        margin: 5px 0 0 3px;
+        /* Geser sedikit ke kanan */
+        text-align: left;
     }
 
     .visi-misi-grid {
