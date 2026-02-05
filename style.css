@@ -1443,6 +1443,42 @@ img {
     flex-grow: 1;
 }
 
+/* Back Content Toggle Logic */
+/* Back Content Toggle Logic */
+.back-content-regular,
+.back-content-fast-track {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    flex-grow: 1;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* Default State: Regular visible, Fast Track hidden */
+.back-content-fast-track {
+    display: none;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.back-content-regular {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Fast Track Mode: Regular hidden, Fast Track visible */
+.service-card.fast-track-mode .back-content-regular {
+    display: none;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.service-card.fast-track-mode .back-content-fast-track {
+    display: flex;
+    animation: fadeIn 0.4s forwards;
+}
+
 .card-footer {
     margin-top: auto;
     display: flex;
