@@ -1944,6 +1944,11 @@ img {
 @media (max-width: 768px) {
 
     /* Navbar Adjustments */
+    .logo {
+        padding-left: 10px;
+        /* Aligned with subpage hero */
+    }
+
     .logo-img {
         height: 45px;
         /* Smaller Logo */
@@ -2283,9 +2288,8 @@ img {
 
 /* Subpage Styles */
 .subpage-hero {
-    height: 30vh;
-    /* Perkecil tinggi hero */
-    min-height: 200px;
+    height: 18vh;
+    min-height: 140px;
     background: linear-gradient(rgba(13, 71, 161, 0.85), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
     display: flex;
     align-items: center;
@@ -2301,16 +2305,13 @@ img {
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    /* Ubah ke flex-start agar bisa diatur posisinya */
-    padding-top: 50px;
-    /* Jarak dari atas untuk menaikkan teks */
+    padding-top: 10px;
     width: 100%;
     padding-left: 20px;
-    /* Disesuaikan agar pas sejajar dengan logo */
 }
 
 .subpage-title {
-    font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
     font-weight: 800;
     line-height: 1.1;
     margin-bottom: 15px;
@@ -2361,14 +2362,19 @@ img {
 }
 
 .subpage-main-content {
-    padding: 100px 0;
+    padding: 40px 0 100px 0;
+    /* Reduced top padding from 100px to 40px */
     background-color: #F5F5F5;
     /* Light gray background to make white cards pop */
     min-height: 50vh;
 }
 
+.subpage-main-content .section-title {
+    font-size: 3rem;
+}
+
 .content-wrapper {
-    max-width: 900px;
+    max-width: var(--container-width);
     margin: 0;
     /* Align to the left to match hero title */
 }
@@ -2608,6 +2614,120 @@ img {
     gap: 40px;
 }
 
+/* Modern Visi & Misi Design (Reference Image) */
+.vm-modern-header {
+    margin-bottom: 40px;
+    text-align: left;
+}
+
+.vm-modern-header .section-tag {
+    color: var(--primary-red);
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.vm-modern-header .section-title {
+    color: #1a1a1a;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 40px;
+}
+
+.vm-modern-container {
+    background-color: #050a44;
+    /* Dark blue background from image */
+    border-radius: 30px;
+    padding: 60px 40px;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    margin-top: 20px;
+}
+
+.vm-modern-box {
+    background-color: var(--white);
+    border-radius: 25px;
+    padding: 40px 30px 30px 30px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.vm-modern-label {
+    position: absolute;
+    top: -20px;
+    left: 40px;
+    background-color: #fcd34d;
+    /* Yellow label */
+    color: #050a44;
+    padding: 10px 25px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.vm-modern-content p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+}
+
+.vm-modern-list {
+    padding-left: 0;
+    margin: 0;
+}
+
+.vm-modern-list li {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 15px;
+    list-style-type: none;
+    position: relative;
+    padding-left: 20px;
+}
+
+.vm-modern-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #666;
+    font-size: 1.2rem;
+}
+
+.vm-modern-list li:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .vm-modern-container {
+        padding: 40px 20px;
+        gap: 40px;
+    }
+
+    .vm-modern-box {
+        padding: 35px 20px 25px 20px;
+    }
+
+    .vm-modern-label {
+        left: 20px;
+        padding: 8px 20px;
+        font-size: 0.95rem;
+    }
+
+    .vm-modern-content p,
+    .vm-modern-list li {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+}
+
 .vm-item {
     display: flex;
     flex-direction: column;
@@ -2731,21 +2851,20 @@ img {
 
 @media (max-width: 768px) {
     .subpage-hero {
-        height: 25vh;
-        /* Perkecil tinggi hero di mobile */
-        min-height: 160px;
+        height: 16vh;
+        min-height: 120px;
         text-align: left;
     }
 
     .subpage-hero .container {
         align-items: flex-start;
-        padding-left: 20px;
-        padding-top: 40px;
-        /* Naikkan posisi teks di mobile */
+        padding-left: 10px;
+        /* Further reduced to move text to the very edge */
+        padding-top: 10px;
     }
 
     .subpage-title {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
         /* Sedikit lebih kecil agar proporsional */
         text-align: left;
         margin-left: 0;
@@ -2754,8 +2873,8 @@ img {
     .subpage-breadcrumb {
         font-size: 0.85rem;
         gap: 8px;
-        margin: 5px 0 0 3px;
-        /* Geser sedikit ke kanan */
+        margin: 5px 0 0 0;
+        /* Removed 3px left margin to align with logo */
         text-align: left;
     }
 
@@ -2764,6 +2883,14 @@ img {
     }
 
     .subpage-main-content {
-        padding: 60px 0;
+        padding: 30px 0 60px 0;
+        /* Reduced top padding from 60px to 30px */
+    }
+
+    .subpage-main-content .section-title {
+        font-size: 1.3rem;
+        /* Small enough to fit one line on most phones */
+        white-space: nowrap;
+        letter-spacing: -0.5px;
     }
 }
