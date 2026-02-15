@@ -170,21 +170,38 @@ if (lenis) {
     lenis.on('scroll', ScrollTrigger.update);
 }
 
+// Force scroll to top on refresh/load
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+
+const scrollToTop = () => {
+    window.scrollTo(0, 0);
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+};
+
+// Immediate reset
+scrollToTop();
+
+// Reset on beforeunload
+window.addEventListener('beforeunload', () => {
+    scrollToTop();
+});
+
 // Initialize when the DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    // Force scroll to top on refresh
-    if ('scrollRestoration' in history) {
-        history.scrollRestoration = 'manual';
-    }
-    window.scrollTo(0, 0);
-
+    scrollToTop();
     initScrollReveal();
     initCountUp();
 
     // Refresh everything after initial load
     window.addEventListener('load', () => {
         ScrollTrigger.refresh();
-        window.scrollTo(0, 0); // Double ensure top position
+        // Multiple checks to ensure top position after various elements load/render
+        scrollToTop();
+        setTimeout(scrollToTop, 10);
+        setTimeout(scrollToTop, 100);
     });
 });
 
