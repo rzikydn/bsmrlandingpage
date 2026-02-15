@@ -1999,8 +1999,9 @@ img {
     .hero-buttons {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        gap: 15px;
+        align-items: flex-start;
+        /* Left align buttons */
+        gap: 12px;
         width: 100%;
     }
 
@@ -2009,52 +2010,61 @@ img {
         margin-top: 0;
         display: block;
         width: auto;
-        /* Allow auto width to center properly */
-        min-width: 200px;
-        /* Ensure similar size */
-        text-align: center;
+        min-width: 160px;
+        text-align: left;
+        /* Left align button text if needed, or keep center but button itself aligns left */
+        padding: 10px 25px;
+        /* Adjust padding */
     }
 
     .btn-primary {
         width: auto;
-        min-width: 200px;
-        text-align: center;
+        min-width: 160px;
+        text-align: left;
+        padding: 10px 25px;
     }
 
     /* Increased height for mobile to push next section down */
     .hero {
-        min-height: 125dvh;
+        min-height: 100dvh;
         align-items: flex-start;
-        padding-top: 30dvh;
-        /* Center content vertically in the initial viewport */
+        padding-top: 32dvh;
+        /* Lowered content further */
     }
 
+    /* Fix Hero Content for Mobile */
     /* Fix Hero Content for Mobile */
     .hero-content {
         margin-left: 0;
         margin-right: 0;
-        text-align: center;
+        text-align: left;
+        /* Left align text */
         padding: 0 20px;
         transform: none;
-        /* Remove upward nudge */
     }
 
     .hero-title {
-        font-size: clamp(1.8rem, 8.5vw, 2.4rem);
+        font-size: clamp(1.6rem, 8vw, 2.2rem);
         line-height: 1.0;
         font-weight: 800;
         width: 100%;
         display: block;
+        margin-bottom: 0;
     }
+
+    .hero-search-wrapper {
+        display: none;
+    }
+
+    /* Assuming search wrapper isn't here, just placeholder */
 
     .title-top {
         display: block;
         white-space: nowrap;
         margin-bottom: 0px;
-        position: relative;
-        left: -5px;
-        /* Adjust this value to shift left */
-        /* transform: translateX(-3px); REMOVED due to animation conflict */
+        /* Reset manual positioning */
+        position: static;
+        left: 0;
     }
 
     .hero-title .highlight {
@@ -2063,6 +2073,15 @@ img {
         display: block;
         white-space: nowrap;
         margin-top: -21px;
+    }
+
+    .hero-subtitle {
+        margin: 5vh 0 20px 0;
+        /* Reduced gap to pull subtitle up */
+        text-align: left;
+        /* Ensure left align */
+        font-size: 0.95rem;
+        line-height: 1.5;
     }
 
     /* Adjust Dropdown for Mobile */
