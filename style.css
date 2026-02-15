@@ -916,6 +916,30 @@ img {
     line-height: 0.7;
 }
 
+.hero-title .title-top,
+.hero-title .highlight,
+.hero-subtitle,
+.hero-buttons {
+    opacity: 0;
+    animation: slideUpFade 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.hero-title .title-top {
+    animation-delay: 0.3s;
+}
+
+.hero-title .highlight {
+    animation-delay: 0.5s;
+}
+
+.hero-subtitle {
+    animation-delay: 0.7s;
+}
+
+.hero-buttons {
+    animation-delay: 0.9s;
+}
+
 .title-top {
     display: block;
     white-space: nowrap;
@@ -2382,6 +2406,81 @@ img {
     max-width: var(--container-width);
     margin: 0;
     /* Align to the left to match hero title */
+}
+
+/* Org Chart Media Display */
+.org-chart-display-wrapper {
+    margin-top: 40px;
+    background-color: #050a44;
+    /* Match vm-modern-container navy */
+    padding: 40px;
+    border-radius: 30px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.org-chart-scroll-box {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background-color: #fff;
+    /* White inner box */
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.org-chart-main-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    min-width: 900px;
+    /* Ensures readability by preventing excessive shrinking */
+}
+
+.org-chart-hint {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 0.62rem;
+    color: rgba(255, 255, 255, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: flex-start;
+    /* Align to the left corner */
+    gap: 6px;
+    white-space: nowrap;
+    padding-left: 5px;
+    /* Slight padding from the corner */
+}
+
+.org-chart-hint i {
+    font-size: 0.7rem;
+}
+
+@media (max-width: 992px) {
+    .org-chart-hint {
+        display: flex;
+    }
+
+    .org-chart-display-wrapper {
+        padding: 20px;
+        border-radius: 20px;
+    }
+
+    .org-chart-scroll-box {
+        padding: 10px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .org-chart-display-wrapper {
+        padding: 40px;
+    }
+
+    .org-chart-main-img {
+        min-width: unset;
+        /* Fit normally on large screens */
+    }
 }
 
 .subpage-section {
