@@ -600,9 +600,7 @@
     box-sizing: border-box;
 }
 
-html {
-    scroll-behavior: smooth;
-}
+
 
 body {
     font-family: var(--font-body);
@@ -889,14 +887,18 @@ img {
 /* Hero Section */
 .hero {
     height: 100vh;
+    height: 100dvh;
+    /* Mobile viewport fix */
     min-height: 600px;
     background: linear-gradient(rgba(13, 71, 161, 0.85), rgba(0, 0, 0, 0.5)), url('images/hero-bg.jpg') center/cover no-repeat;
     display: flex;
     align-items: center;
     position: relative;
     color: var(--white);
-    margin-top: 80px;
-    /* Offset for fixed nav */
+    margin-top: 0;
+    /* Removed margin to prevent scroll offset */
+    padding-top: 80px;
+    /* Added padding to compensate for fixed nav */
     overflow: hidden;
 }
 
@@ -915,6 +917,8 @@ img {
     margin-bottom: 20px;
     line-height: 0.7;
 }
+
+
 
 .hero-title .title-top,
 .hero-title .highlight,
@@ -2319,8 +2323,8 @@ img {
     align-items: center;
     position: relative;
     color: var(--white);
-    margin-top: 80px;
-    padding: 0 20px;
+    margin-top: 0;
+    padding: 80px 20px 0 20px;
     text-align: left;
 }
 
