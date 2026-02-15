@@ -2025,8 +2025,8 @@ img {
     .hero {
         min-height: 125dvh;
         align-items: flex-start;
-        padding-top: 160px;
-        /* Increased padding to center content better in taller hero */
+        padding-top: 30dvh;
+        /* Center content vertically in the initial viewport */
     }
 
     /* Fix Hero Content for Mobile */
@@ -2035,8 +2035,8 @@ img {
         margin-right: 0;
         text-align: center;
         padding: 0 20px;
-        transform: translateY(-45px);
-        /* Nudge content upwards */
+        transform: none;
+        /* Remove upward nudge */
     }
 
     .hero-title {
@@ -2051,7 +2051,10 @@ img {
         display: block;
         white-space: nowrap;
         margin-bottom: 0px;
-        transform: translateX(-3px);
+        position: relative;
+        left: -5px;
+        /* Adjust this value to shift left */
+        /* transform: translateX(-3px); REMOVED due to animation conflict */
     }
 
     .hero-title .highlight {
