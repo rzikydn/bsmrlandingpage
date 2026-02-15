@@ -889,10 +889,7 @@ img {
     height: 100vh;
     height: 100dvh;
     /* Mobile viewport fix */
-    min-height: 110vh;
-    /* Increased to push content down */
-    min-height: 110dvh;
-    /* Mobile specific increase */
+    min-height: 600px;
     background: linear-gradient(rgba(13, 71, 161, 0.85), rgba(0, 0, 0, 0.5)), url('images/hero-bg.jpg') center/cover no-repeat;
     display: flex;
     align-items: center;
@@ -2022,6 +2019,14 @@ img {
         width: auto;
         min-width: 200px;
         text-align: center;
+    }
+
+    /* Increased height for mobile to push next section down */
+    .hero {
+        min-height: 125dvh;
+        align-items: flex-start;
+        padding-top: 160px;
+        /* Increased padding to center content better in taller hero */
     }
 
     /* Fix Hero Content for Mobile */
