@@ -201,6 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollToTop();
     initScrollReveal();
     initCountUp();
+    initScheduleFilter();
 
     // Refresh everything after initial load
     window.addEventListener('load', () => {
@@ -508,5 +509,36 @@ function toggleFastTrack(element) {
                 knob.textContent = 'REGULAR';
             }
         }
+    }
+}
+
+/**
+ * Schedule Filtering Function
+ * Filters table rows based on the selected month.
+ */
+function initScheduleFilter() {
+    const monthFilter = document.getElementById('monthFilter');
+    const scheduleRows = document.querySelectorAll('.schedule-table tbody tr');
+
+    if (monthFilter && scheduleRows.length > 0) {
+        monthFilter.addEventListener('change', function () {
+            const selectedMonth = this.value;
+
+            scheduleRows.forEach(row => {
+                const rowMonth = row.getAttribute('data-month');
+
+                if (selectedMonth === "" || rowMonth === selectedMonth) {
+                    row.style.display = "";
+                    // Optional: Add a small fade-in effect
+                    row.style.opacity = "0";
+                    setTimeout(() => {
+                        row.style.transition = "opacity 0.3s ease";
+                        row.style.opacity = "1";
+                    }, 50);
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
     }
 }

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Sertifikasi - BSMR</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Preload Hero Image -->
+    <link rel="preload" as="image" href="images/hero-bg.jpg">
+    <style>
+        .schedule-table-container {
+            margin-bottom: 40px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            background: white;
+        }
+
+        .schedule-header {
+            padding: 15px 25px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: left;
+            /* Left align header text */
+        }
+
+        .schedule-header.primary {
+            background-color: #050a44;
+        }
+
+        .schedule-header.danger {
+            background-color: var(--primary-red);
+        }
+
+        .schedule-body {
+            padding: 20px;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .schedule-table tr {
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .schedule-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .schedule-table td {
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            color: #475569;
+        }
+
+        .schedule-table td.date {
+            font-weight: 600;
+            color: var(--text-dark);
+            width: 200px;
+        }
+
+        .schedule-table td.separator {
+            width: 20px;
+            text-align: center;
+            color: #ccc;
+        }
+
+        .schedule-table td.name {
+            font-weight: 700;
+            color: #1e293b;
+            text-transform: uppercase;
+        }
+
+        .schedule-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: flex-start;
+            /* Align dropdown to the left */
+            margin-bottom: 30px;
+        }
+
+        .month-select {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            font-family: inherit;
+            color: var(--text-dark);
+            background: white;
+            min-width: 150px;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .month-select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1);
+        }
+
+        .important-note {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #050a44;
+        }
+
+        .important-note h3 {
+            font-size: 1.25rem;
+            color: #050a44;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+
+        .note-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .note-list li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 12px;
+            color: #475569;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .note-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--primary-red);
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .schedule-table td.date {
+                width: 140px;
+                font-size: 0.85rem;
+            }
+
+            .schedule-table td.name {
+                font-size: 0.85rem;
+            }
+
+            .schedule-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="menu-overlay" id="menu-overlay"></div>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="images/bsmrlogo-removebg-preview_Nero_AI_Image_Upscaler_Photo_Face.png" alt="BSMR Logo"
+                    class="logo-img">
+            </a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html#home" class="nav-links">BERANDA</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="index.html#about" class="nav-links">TENTANG <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="visi-misi.html">Visi & Misi</a></li>
+                        <li><a href="peraturan-perizinan.html">Peraturan & Perizinan</a></li>
+                        <li><a href="struktur-organisasi.html">Struktur Organisasi</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="index.html#services" class="nav-links">SERTIFIKASI <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="sertifikasi-pelaksanaan.html">Sertifikasi & Pelaksanaan</a></li>
+                        <li><a href="metode-uji.html">Metode Uji</a></li>
+                        <li><a href="#">TUK</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="index.html#registration" class="nav-links">INFORMASI PENDAFTARAN <i
+                            class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="biaya.html">Biaya</a></li>
+                        <li><a href="ketentuan-inhouse.html">Ketentuan Asesmen In-House</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="index.html#schedule" class="nav-links">JADWAL <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="jadwal-sertifikasi.html">Jadwal Sertifikasi</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-links">TRAINING PROVIDER <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Training Provider Pembekalan & Pemeliharaan</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#register" class="nav-links btn-nav">Registrasi</a>
+                </li>
+                <li class="nav-item">
+                    <a href="index.html#login" class="nav-links btn-nav btn-login">Login</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Subpage Hero -->
+    <section class="subpage-hero">
+        <div class="container">
+            <h1 class="subpage-title">Jadwal Sertifikasi</h1>
+            <div class="subpage-breadcrumb">
+                <a href="index.html">Home</a>
+                <i class="fas fa-chevron-right"></i>
+                <a href="index.html#schedule">Jadwal</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Jadwal Sertifikasi</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="subpage-main-content">
+        <div class="container">
+            <div class="content-wrapper">
+
+                <div class="section-header vm-modern-header">
+                    <h4 class="section-tag">JADWAL ASESMEN</h4>
+                    <h2 class="section-title">PROGRAM SERTIFIKASI MANAJEMEN RISIKO UMUM</h2>
+                </div>
+
+                <div class="filter-container">
+                    <select class="month-select" id="monthFilter">
+                        <option value="">Bulan</option>
+                        <option value="1">Januari</option>
+                        <option value="2">Februari</option>
+                        <option value="3">Maret</option>
+                        <option value="4">April</option>
+                        <option value="5">Mei</option>
+                        <option value="6">Juni</option>
+                    </select>
+                </div>
+
+                <div class="schedule-table-container">
+                    <div class="schedule-header primary">
+                        Jadwal Asesmen Sertifikasi
+                    </div>
+                    <div class="schedule-body" style="padding: 0;">
+                        <table class="schedule-table">
+                            <tbody>
+                                <tr data-month="12">
+                                    <td class="date">3 Desember 2025</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO</td>
+                                </tr>
+                                <tr data-month="12">
+                                    <td class="date">20 Desember 2025</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO</td>
+                                </tr>
+                                <tr data-month="1">
+                                    <td class="date">14 Januari 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO</td>
+                                </tr>
+                                <tr data-month="1">
+                                    <td class="date">24 Januari 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO</td>
+                                </tr>
+                                <tr data-month="1">
+                                    <td class="date">28 Januari 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO</td>
+                                </tr>
+                                <tr data-month="2">
+                                    <td class="date">7 Februari 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO</td>
+                                </tr>
+                                <tr data-month="2">
+                                    <td class="date">11 Februari 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO - ONLINE</td>
+                                </tr>
+                                <tr data-month="2">
+                                    <td class="date">25 Februari 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO</td>
+                                </tr>
+                                <tr data-month="3">
+                                    <td class="date">7 Maret 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO</td>
+                                </tr>
+                                <tr data-month="3">
+                                    <td class="date">11 Maret 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO - ONLINE</td>
+                                </tr>
+                                <tr data-month="4">
+                                    <td class="date">11 April 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO</td>
+                                </tr>
+                                <tr data-month="4">
+                                    <td class="date">15 April 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO - ONLINE</td>
+                                </tr>
+                                <tr data-month="4">
+                                    <td class="date">25 April 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO</td>
+                                </tr>
+                                <tr data-month="4">
+                                    <td class="date">29 April 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO</td>
+                                </tr>
+                                <tr data-month="5">
+                                    <td class="date">9 Mei 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO</td>
+                                </tr>
+                                <tr data-month="5">
+                                    <td class="date">13 Mei 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO - ONLINE</td>
+                                </tr>
+                                <tr data-month="5">
+                                    <td class="date">20 Mei 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO</td>
+                                </tr>
+                                <tr data-month="6">
+                                    <td class="date">10 Juni 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO - ONLINE</td>
+                                </tr>
+                                <tr data-month="6">
+                                    <td class="date">20 Juni 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO</td>
+                                </tr>
+                                <tr data-month="6">
+                                    <td class="date">24 Juni 2026</td>
+                                    <td class="separator">:</td>
+                                    <td class="name">JADWAL SERTIFIKASI MANAJEMEN RISIKO</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="schedule-table-container">
+                    <div class="schedule-header danger">
+                        Jadwal Asesmen Re-Sertifikasi
+                    </div>
+                    <div class="schedule-body" style="min-height: 50px;">
+                        <!-- Placeholder for Re-Sertifikasi schedule -->
+                    </div>
+                </div>
+
+                <div class="important-note">
+                    <h3>Catatan Penting</h3>
+                    <ul class="note-list">
+                        <li>Batas waktu <strong style="color: var(--primary-red);">Pendaftaran H-7</strong> dari Jadwal
+                            Asesmen</li>
+                        <li><strong style="color: var(--primary-red);">Pilihan Metode Uji Portofolio dan
+                                Observasi</strong> wajib disampaikan saat mengajukan permohonan</li>
+                        <li>Di luar jadwal di atas dapat diajukan permohonan in-house dengan syarat dan ketentuan
+                            berlaku. Untuk Jadwal inhouse silahkan hubungi Team Admin LSP BSMR</li>
+                        <li>BSMR berhak membatalkan pelaksanaan asesmen umum jika pendaftaran yang diterima di bawah
+                            <strong style="color: var(--primary-red);">10 peserta</strong>
+                        </li>
+                        <li>Kapasitas maksimal asesmen umum untuk <strong style="color: var(--primary-red);">50
+                                peserta</strong></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="container footer-grid">
+            <div class="footer-info">
+                <img src="images/bsmrlogo-removebg-preview_Nero_AI_Image_Upscaler_Photo_Face.png" alt="BSMR Logo"
+                    class="footer-logo">
+                <p><strong>LSP Badan Sertifikasi Manajemen Risiko</strong></p>
+                <p>Mitra terpercaya dalam pengembangan kompetensi perbankan Indonesia melalui sertifikasi manajemen
+                    risiko berstandar internasional.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Tautan Cepat</h4>
+                <ul>
+                    <li><a href="index.html#home">Beranda</a></li>
+                    <li><a href="index.html#about">Tentang Kami</a></li>
+                    <li><a href="index.html#services">Sertifikasi</a></li>
+                    <li><a href="index.html#registration">Informasi Pendaftaran</a></li>
+                    <li><a href="index.html#schedule">Jadwal</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>Hubungi Kami</h4>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> Gandaria 8 Office Tower, Lt. 2, Unit D. <br>Jl. Sultan
+                        Iskandar Muda No. 8, Jakarta Selatan</li>
+                    <li><i class="fas fa-phone"></i> Telp : 021-29036680</li>
+                    <li><i class="fas fa-fax"></i> Fax : 021-29036681</li>
+                    <li><i class="fas fa-envelope"></i> Email : administrasi@bsmr.org</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 BSMR. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Lenis for Smooth Scrolling -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
