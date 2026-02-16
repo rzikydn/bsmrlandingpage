@@ -6,10 +6,23 @@ const menuOverlay = document.getElementById('menu-overlay');
 if (mobileMenu && navMenu) {
     mobileMenu.addEventListener('click', (e) => {
         e.stopPropagation();
+        const isClosing = navMenu.classList.contains('active');
         mobileMenu.classList.toggle('active');
         navMenu.classList.toggle('active');
         if (menuOverlay) menuOverlay.classList.toggle('active');
         document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+
+        // Reset dropdowns if we're closing the menu
+        if (isClosing) {
+            document.querySelectorAll('.nav-item.dropdown').forEach(item => item.classList.remove('active'));
+        } else {
+            // If we're opening, ensure current subpage dropdown is open
+            const activeSubpageLink = document.querySelector('.dropdown-menu a.active-page');
+            if (activeSubpageLink) {
+                const parentDropdown = activeSubpageLink.closest('.nav-item.dropdown');
+                if (parentDropdown) parentDropdown.classList.add('active');
+            }
+        }
     });
 
     // Handle mobile dropdowns
@@ -32,11 +45,14 @@ if (mobileMenu && navMenu) {
     });
 
     // Close menu when a link (that is not a dropdown toggle) is clicked
-    document.querySelectorAll('.nav-links:not(.nav-item.dropdown > a)').forEach(n => n.addEventListener('click', () => {
+    document.querySelectorAll('.nav-menu a:not(.nav-item.dropdown > a)').forEach(n => n.addEventListener('click', () => {
         mobileMenu.classList.remove('active');
         navMenu.classList.remove('active');
         if (menuOverlay) menuOverlay.classList.remove('active');
         document.body.style.overflow = '';
+
+        // Reset all dropdowns
+        document.querySelectorAll('.nav-item.dropdown').forEach(item => item.classList.remove('active'));
     }));
 
     // Close menu when overlay is clicked
@@ -202,6 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollReveal();
     initCountUp();
     initScheduleFilter();
+    initActiveMenu();
 
     // Refresh everything after initial load
     window.addEventListener('load', () => {
@@ -541,4 +558,26 @@ function initScheduleFilter() {
             });
         });
     }
+}
+
+/**
+ * Active Menu Highlighting
+ * Identifies the current page and highlights it in the navbar.
+ */
+function initActiveMenu() {
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-menu a');
+
+    navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href || href === '#' || href.startsWith('#')) return;
+
+        // Check if current path ends with href or href matches current path
+        if (currentPath.endsWith(href) || (currentPath === '/' && href === 'index.html')) {
+            link.classList.add('active-page');
+
+            // If it's a subpage link, add active-page to the desktop link too if needed
+            // But mainly for mobile indicators
+        }
+    });
 }

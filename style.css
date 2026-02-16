@@ -811,8 +811,15 @@ img {
 
 /* Specific spacing removed to bring buttons closer */
 
-.nav-links:hover {
+.nav-links:hover,
+.nav-links.active-page {
     color: var(--primary-red);
+}
+
+.dropdown-menu li a.active-page {
+    color: var(--primary-red) !important;
+    font-weight: 700;
+    background-color: rgba(211, 47, 47, 0.05);
 }
 
 .nav-links i {
@@ -842,14 +849,17 @@ img {
     z-index: 1000;
 }
 
-.nav-item.dropdown:hover .dropdown-menu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
+/* Dropdown Menu - Desktop Hover */
+@media (min-width: 1025px) {
+    .nav-item.dropdown:hover .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
 
-.nav-item.dropdown:hover .nav-links i {
-    transform: rotate(180deg);
+    .nav-item.dropdown:hover .nav-links i {
+        transform: rotate(180deg);
+    }
 }
 
 .dropdown-menu li {
@@ -2102,25 +2112,7 @@ img {
         line-height: 1.5;
     }
 
-    /* Adjust Dropdown for Mobile */
-    .dropdown-menu {
-        position: static;
-        opacity: 1;
-        visibility: visible;
-        transform: none;
-        box-shadow: none;
-        background-color: var(--bg-light);
-        display: none;
-        /* Hide initially */
-        width: 100%;
-        padding: 0;
-    }
-
-    .nav-item.dropdown:hover .dropdown-menu {
-        display: block;
-        /* Show on hover/click interaction */
-    }
-
+    /* Adjust Dropdown for Mobile - Handled by .active class from JS */
     .dropdown-menu li a {
         padding-left: 30px;
     }
