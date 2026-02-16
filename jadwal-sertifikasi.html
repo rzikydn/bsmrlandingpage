@@ -113,6 +113,43 @@
             box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1);
         }
 
+        @media (max-width: 768px) {
+            .schedule-header {
+                font-size: 0.85rem;
+                padding: 12px 15px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .schedule-table td {
+                padding: 10px 4px !important;
+                font-size: 0.61rem !important;
+                /* Slightly smaller to fit full text */
+                white-space: nowrap;
+                letter-spacing: -0.4px;
+                /* Tighter letter spacing */
+            }
+
+            .schedule-table td.date {
+                width: 78px !important;
+                min-width: 78px !important;
+            }
+
+            .schedule-table td.name {
+                max-width: none;
+                overflow: visible;
+                text-overflow: clip;
+                display: table-cell;
+                font-size: 0.6rem !important;
+            }
+
+            .schedule-table td.separator {
+                width: 10px !important;
+                padding: 10px 2px !important;
+            }
+        }
+
         .important-note {
             margin-top: 50px;
             padding-top: 30px;
@@ -251,7 +288,7 @@
 
                 <div class="section-header vm-modern-header">
                     <h4 class="section-tag">JADWAL ASESMEN</h4>
-                    <h2 class="section-title">PROGRAM SERTIFIKASI MANAJEMEN RISIKO UMUM</h2>
+                    <h2 class="section-title">PROGRAM SERTIFIKASI MANAJEMEN RISIKO</h2>
                 </div>
 
                 <div class="filter-container">
