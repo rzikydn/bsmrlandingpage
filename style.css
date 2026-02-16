@@ -1999,8 +1999,8 @@ img {
     .hero-buttons {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        /* Left align buttons */
+        align-items: center;
+        /* Center align buttons */
         gap: 12px;
         width: 100%;
     }
@@ -2011,25 +2011,26 @@ img {
         display: block;
         width: auto;
         min-width: 160px;
-        text-align: left;
-        /* Left align button text if needed, or keep center but button itself aligns left */
+        text-align: center;
+        /* Center align text */
         padding: 10px 25px;
-        /* Adjust padding */
     }
 
     .btn-primary {
         width: auto;
         min-width: 160px;
-        text-align: left;
+        text-align: center;
+        /* Center align text */
         padding: 10px 25px;
     }
 
     /* Increased height for mobile to push next section down */
     .hero {
-        min-height: 100dvh;
+        min-height: 115dvh;
+        /* Extend height to push next section down */
         align-items: flex-start;
-        padding-top: 32dvh;
-        /* Lowered content further */
+        padding-top: 35dvh;
+        /* Adjust padding to center content */
     }
 
     /* Fix Hero Content for Mobile */
@@ -2037,8 +2038,8 @@ img {
     .hero-content {
         margin-left: 0;
         margin-right: 0;
-        text-align: left;
-        /* Left align text */
+        text-align: center;
+        /* Center align text */
         padding: 0 20px;
         transform: none;
     }
@@ -2060,26 +2061,25 @@ img {
 
     .title-top {
         display: block;
-        white-space: nowrap;
-        margin-bottom: 0px;
-        /* Reset manual positioning */
+        white-space: normal;
+        margin-bottom: -15px;
+        /* Pull next line closer */
         position: static;
-        left: 0;
     }
 
     .hero-title .highlight {
         font-size: 1.0em;
-        /* Sedikit lebih besar untuk penekanan */
         display: block;
-        white-space: nowrap;
-        margin-top: -21px;
+        white-space: normal;
+        margin-top: -5px;
+        /* Pull up to reduce gap */
     }
 
     .hero-subtitle {
-        margin: 5vh 0 20px 0;
-        /* Reduced gap to pull subtitle up */
-        text-align: left;
-        /* Ensure left align */
+        margin: 5vh auto 20px auto;
+        /* Center align margin */
+        text-align: center;
+        /* Center align text */
         font-size: 0.95rem;
         line-height: 1.5;
     }
@@ -2125,27 +2125,40 @@ img {
     }
 
     .partners-logo {
-        justify-content: center;
+        justify-content: flex-start;
+        /* Geser semua logo ke kiri */
         gap: 15px;
-        /* Slightly reduced gap */
         flex-wrap: nowrap;
-        /* Force one line */
+        align-items: flex-start;
+        /* Align dari atas agar bisa atur turun per-logo */
     }
 
     .partners-logo img {
-        height: 65px !important;
-        /* Slightly reduced to fit in one row */
+        height: 55px !important;
         width: auto;
+        object-fit: contain;
     }
 
     .partners-logo .logo-ojk {
-        height: 80px !important;
-        /* Slightly reduced to fit in one row */
+        height: 70px !important;
+        position: relative !important;
+        top: 8px !important;
+        /* Turunkan sedikit */
+        left: 0 !important;
     }
 
     .partners-logo .logo-garp {
+        height: 70px !important;
+        position: relative !important;
+        top: 8px !important;
+        /* Turunkan sedikit */
         left: 0 !important;
-        top: 0 !important;
+    }
+
+    /* Logo BNSP (gambar pertama) turunkan sedikit */
+    .partners-logo img:first-child {
+        position: relative !important;
+        top: 15px !important;
     }
 }
 
@@ -2346,8 +2359,8 @@ img {
 
 /* Subpage Styles */
 .subpage-hero {
-    height: 18vh;
-    min-height: 140px;
+    height: 30vh;
+    min-height: 250px;
     background: linear-gradient(rgba(13, 71, 161, 0.85), rgba(0, 0, 0, 0.6)), url('images/hero-bg.jpg') center/cover no-repeat;
     display: flex;
     align-items: center;
@@ -3074,14 +3087,21 @@ img {
 
 @media (max-width: 768px) {
     .subpage-hero {
-        height: 16vh;
-        min-height: 120px;
+        height: auto;
+        min-height: 25vh;
+        /* Increased from 16vh */
         text-align: left;
+        padding-top: 110px;
+        /* Space for navbar */
+        padding-bottom: 30px;
+        display: flex;
+        align-items: center;
     }
 
     .subpage-hero .container {
         align-items: flex-start;
-        padding-left: 10px;
+        padding-left: 20px;
+        /* Standardize with other sections */
         /* Further reduced to move text to the very edge */
         padding-top: 10px;
     }
