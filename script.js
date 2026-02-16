@@ -191,6 +191,13 @@ window.addEventListener('beforeunload', () => {
 
 // Initialize when the DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    // Priority 1: Welcome Popup initialization
+    try {
+        initWelcomePopup();
+    } catch (e) {
+        console.error("Popup Error:", e);
+    }
+
     scrollToTop();
     initScrollReveal();
     initCountUp();
@@ -198,12 +205,44 @@ document.addEventListener('DOMContentLoaded', () => {
     // Refresh everything after initial load
     window.addEventListener('load', () => {
         ScrollTrigger.refresh();
-        // Multiple checks to ensure top position after various elements load/render
         scrollToTop();
         setTimeout(scrollToTop, 10);
         setTimeout(scrollToTop, 100);
     });
 });
+
+function initWelcomePopup() {
+    const welcomeModal = document.getElementById('welcome-modal');
+    const closeBtn = document.getElementById('close-modal-btn');
+
+    if (welcomeModal) {
+        // Show every time on refresh - removed localStorage check
+        setTimeout(() => {
+            welcomeModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }, 1500);
+
+        const closeModal = () => {
+            welcomeModal.classList.remove('active');
+            document.body.style.overflow = '';
+            // localStorage save removed to allow showing on next refresh
+        };
+
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+        // Close on overlay click
+        welcomeModal.addEventListener('click', (e) => {
+            if (e.target === welcomeModal) closeModal();
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && welcomeModal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+    }
+}
 
 function initCountUp() {
     const counts = document.querySelectorAll('.count-up');

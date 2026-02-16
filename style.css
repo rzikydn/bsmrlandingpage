@@ -3124,12 +3124,13 @@ img {
     }
 
     .subpage-title {
-        font-size: 1.3rem;
-        /* Further reduced from 1.5rem to fit long titles */
+        font-size: 1.15rem;
+        /* Adjusted to fit long titles in one line */
         text-align: left;
         margin-left: 0;
         white-space: nowrap;
-        letter-spacing: -0.5px;
+        letter-spacing: -0.7px;
+        line-height: 1.2;
     }
 
     .subpage-breadcrumb {
@@ -3161,10 +3162,11 @@ img {
     }
 
     .subpage-main-content .section-title {
-        font-size: 1.3rem;
-        /* Small enough to fit one line on most phones */
+        font-size: 1.1rem;
+        /* Adjusted from 1.3rem to fit long titles in one line */
         white-space: nowrap;
-        letter-spacing: -0.5px;
+        letter-spacing: -0.7px;
+        line-height: 1.2;
     }
 
     .vm-modern-header {
@@ -3190,5 +3192,86 @@ img {
         text-align: right;
         font-weight: 700;
         margin-left: 10px;
+    }
+}
+
+/* Modal Popup Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    background: rgba(5, 10, 68, 0.85);
+    /* Deep Blue Overlay */
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-container {
+    background: var(--white);
+    width: 90%;
+    max-width: 400px;
+    /* Reduced from 500px for a more compact desktop look */
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    transform: scale(0.9) translateY(40px);
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+.modal-overlay.active .modal-container {
+    transform: scale(1) translateY(0);
+}
+
+.modal-content {
+    position: relative;
+    width: 100%;
+}
+
+.modal-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
+.modal-footer {
+    padding: 25px;
+    text-align: center;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+}
+
+.modal-footer .btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+@media (max-width: 576px) {
+    .modal-container {
+        width: 95%;
+        border-radius: 20px;
+    }
+
+    .modal-footer {
+        padding: 20px;
     }
 }
