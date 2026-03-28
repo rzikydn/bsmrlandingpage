@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kontak Kami - PT Garda Multi Talenta</title>
+    <link rel="icon" href="images/GMTlogo-removebg-preview.png" type="image/png">
     <link rel="stylesheet" href="style.css">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,29 +35,14 @@
                 <li class="nav-item">
                     <a href="index.html#home" class="nav-links">BERANDA</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a href="index.html#about" class="nav-links">TENTANG <i class="fas fa-chevron-down"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="visi-misi.html">Visi & Misi</a></li>
-                        <li><a href="peraturan-perizinan.html">Peraturan & Perizinan</a></li>
-                        <li><a href="struktur-organisasi.html">Struktur Organisasi</a></li>
-                    </ul>
+                <li class="nav-item">
+                    <a href="index.html#about" class="nav-links">TENTANG</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a href="index.html#services" class="nav-links">SERTIFIKASI <i class="fas fa-chevron-down"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="sertifikasi-pelaksanaan.html">Sertifikasi & Pelaksanaan</a></li>
-                        <li><a href="metode-uji.html">Metode Uji</a></li>
-                        <li><a href="#">TUK</a></li>
-                    </ul>
+                <li class="nav-item">
+                    <a href="index.html#services" class="nav-links">SERTIFIKASI</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a href="index.html#registration" class="nav-links">INFORMASI PENDAFTARAN <i
-                            class="fas fa-chevron-down"></i></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="biaya.html">Biaya</a></li>
-                        <li><a href="ketentuan-inhouse.html">Ketentuan Asesmen In-House</a></li>
-                    </ul>
+                <li class="nav-item">
+                    <a href="index.html#registration" class="nav-links">INFORMASI PENDAFTARAN</a>
                 </li>
 
                 <li class="nav-item">
@@ -123,33 +109,52 @@
             <div class="map-form-grid">
 
                 <!-- Google Maps -->
-                <div class="map-container">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521732907785!2d106.81245!3d-6.18958!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f43e3c7d1e5d%3A0x91ee72c9c1b1a3a0!2sThe%20Boulevard!5e0!3m2!1sid!2sid!4v1710000000000!5m2!1sid!2sid"
+                <div class="map-container" style="position: relative;">
+                    <iframe src="https://maps.google.com/maps?q=-6.18958,106.81245&t=&z=17&ie=UTF8&iwloc=&output=embed"
                         width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade">
                     </iframe>
+                    <a href="https://www.google.com/maps?q=-6.18958,106.81245" target="_blank" rel="noopener noreferrer"
+                        style="position:absolute; top:15px; left:15px; background:#fff; padding:8px 16px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.15); font-size:0.85rem; font-weight:600; color:#1a73e8; text-decoration:none; display:flex; align-items:center; gap:6px; z-index:5;">
+                        Buka di Maps <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i>
+                    </a>
                 </div>
 
                 <!-- Contact Form -->
                 <div class="contact-form-container">
-                    <form action="#" method="POST" class="contact-msg-form">
+                    <form id="contactForm" class="contact-msg-form" onsubmit="return sendContactForm(event)">
                         <div class="msg-form-group">
-                            <input type="text" placeholder="Nama Anda" required>
+                            <input type="text" name="name" placeholder="Nama Anda" required>
                         </div>
                         <div class="msg-form-group">
-                            <input type="email" placeholder="Email Anda" required>
+                            <input type="email" name="email" placeholder="Email Anda" required>
                         </div>
                         <div class="msg-form-group">
-                            <input type="text" placeholder="Subjek" required>
+                            <input type="text" name="subject" placeholder="Subjek" required>
                         </div>
                         <div class="msg-form-group">
-                            <textarea rows="6" placeholder="Pesan Anda" required></textarea>
+                            <textarea rows="6" name="message" placeholder="Pesan Anda" required></textarea>
                         </div>
                         <div class="msg-form-actions">
                             <button type="submit" class="btn-send-message">KIRIM PESAN</button>
                         </div>
                     </form>
+                    <script>
+                        function sendContactForm(e) {
+                            e.preventDefault();
+                            const form = document.getElementById('contactForm');
+                            const name = form.querySelector('[name="name"]').value;
+                            const email = form.querySelector('[name="email"]').value;
+                            const subject = form.querySelector('[name="subject"]').value;
+                            const message = form.querySelector('[name="message"]').value;
+
+                            const body = `Nama: ${name}%0AEmail: ${email}%0A%0A${encodeURIComponent(message)}`;
+                            const mailto = `mailto:vivi@gardamultitalenta.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+
+                            window.location.href = mailto;
+                            return false;
+                        }
+                    </script>
                 </div>
 
             </div>
@@ -158,34 +163,47 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container footer-grid">
-            <div class="footer-info">
-                <img src="images/GMTlogo-removebg-preview.png" alt="BSMR Logo" class="footer-logo">
-                <p><strong>LSP Badan Sertifikasi Manajemen Risiko</strong></p>
-                <p>Mitra terpercaya dalam pengembangan kompetensi perbankan Indonesia melalui sertifikasi manajemen
-                    risiko berstandar internasional.</p>
+        <div class="container footer-top">
+            <div class="footer-brand">
+                <img src="images/GMTlogo-removebg-preview.png" alt="Garda Multi Talenta Logo" class="footer-logo">
+                <p class="footer-desc">Mitra terpercaya dalam pengembangan kompetensi perbankan Indonesia melalui
+                    sertifikasi manajemen risiko berstandar internasional.</p>
+                <div class="footer-contact-list">
+                    <div class="footer-contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>021-29036680</span>
+                    </div>
+                    <div class="footer-contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>administrasi@bsmr.org</span>
+                    </div>
+                </div>
             </div>
-            <div class="footer-links">
-                <h4>Tautan Cepat</h4>
+            <div class="footer-col">
+                <h4 class="footer-col-title">Layanan</h4>
                 <ul>
-                    <li><a href="index.html#home">Beranda</a></li>
-                    <li><a href="index.html#about">Tentang Kami</a></li>
                     <li><a href="index.html#services">Sertifikasi</a></li>
                     <li><a href="index.html#registration">Informasi Pendaftaran</a></li>
+                    <li><a href="kontak.html">Hubungi Kami</a></li>
                 </ul>
             </div>
-            <div class="footer-contact">
-                <h4>Hubungi Kami</h4>
+            <div class="footer-col">
+                <h4 class="footer-col-title">Sumber Daya</h4>
                 <ul>
-                    <li><i class="fas fa-map-marker-alt"></i> The Boulevard, Jl. Haji Fachrudin No. 05 <br>Lantai 5,
-                        Unit 05-D2, Jakarta Pusat</li>
-                    <li><i class="fas fa-phone"></i> 081297700118</li>
-                    <li><i class="fas fa-envelope"></i> Email : vivi@gardamultitalenta.com</li>
+                    <li><a href="index.html#about">Tentang Kami</a></li>
+                    <li><a href="index.html#schedule">Jadwal</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 class="footer-col-title">Perusahaan</h4>
+                <ul>
+                    <li><a href="index.html#about">Profil</a></li>
+                    <li><a href="kontak.html">Kontak</a></li>
                 </ul>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 BSMR. All Rights Reserved.</p>
+        <div class="container footer-bottom">
+            <p class="footer-copyright">&copy; 2026 Garda Multi Talenta. All rights reserved.</p>
         </div>
     </footer>
 

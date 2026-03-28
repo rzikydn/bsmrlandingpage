@@ -153,30 +153,6 @@ if (readMoreBtn && aboutDescription) {
     });
 }
 
-// Program Info Read More Toggle
-const readMoreProgramBtn = document.getElementById('readMoreProgramBtn');
-const programHiddenText = document.querySelector('.program-hidden-text');
-
-if (readMoreProgramBtn && programHiddenText) {
-    readMoreProgramBtn.addEventListener('click', () => {
-        programHiddenText.classList.toggle('expanded');
-        readMoreProgramBtn.classList.toggle('active');
-
-        const icon = readMoreProgramBtn.querySelector('i');
-        if (programHiddenText.classList.contains('expanded')) {
-            readMoreProgramBtn.childNodes[0].textContent = 'Tutup ';
-            icon.className = 'fas fa-chevron-up';
-        } else {
-            readMoreProgramBtn.childNodes[0].textContent = 'Baca Selengkapnya ';
-            icon.className = 'fas fa-chevron-down';
-        }
-
-        // CRITICAL: Refresh ScrollTrigger because page height changed
-        setTimeout(() => {
-            ScrollTrigger.refresh();
-        }, 100);
-    });
-}
 
 // GSAP Configuration
 gsap.registerPlugin(ScrollTrigger);
@@ -247,11 +223,10 @@ function initCountUp() {
 
 function initScrollReveal() {
     const targets = [
-        { selector: '.program-info .info-content > p:first-of-type', options: { baseRotation: 2, blurStrength: 3 } },
-        { selector: '.program-info .desktop-only-text', options: { baseRotation: 2, blurStrength: 3 } },
+
         { selector: '.about-description > p:first-of-type', options: { baseRotation: 2, blurStrength: 3, start: 'top 95%', end: 'top 40%' } },
         { selector: '.registration .section-subtitle', options: { baseRotation: 2, blurStrength: 3, start: 'top 95%', end: 'top 60%' } },
-        { selector: '.program-info .section-title', options: { baseRotation: 3, blurStrength: 4 } },
+
         { selector: '.about .section-tag', options: { baseRotation: 3, blurStrength: 4 } },
         { selector: '.about .section-title', options: { baseRotation: 3, blurStrength: 4 } },
         { selector: '.services .section-tag', options: { baseRotation: 3, blurStrength: 4 } },
@@ -301,9 +276,12 @@ function initScrollReveal() {
             words.forEach(node => textSpan.appendChild(node));
             const wordElements = el.querySelectorAll('.word');
 
+            // Use custom trigger element if specified, otherwise use el itself
+            const triggerEl = options.trigger ? document.querySelector(options.trigger) : el;
+
             gsap.timeline({
                 scrollTrigger: {
-                    trigger: el,
+                    trigger: triggerEl,
                     start: options.start || 'top 90%',
                     end: options.end || 'top 30%',
                     scrub: true,
