@@ -1,3 +1,37 @@
+// ─── iOS Safari Hero Height Fix ───
+// On mobile, set hero height AND padding to fixed pixel values.
+// This prevents the "zoom-in" effect and text shifting caused by iOS Safari
+// resizing viewport units when the toolbar collapses/expands during scroll.
+(function fixHeroHeight() {
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
+
+    function setFixedHeight() {
+        if (window.innerWidth <= 768) {
+            const h = window.innerHeight;
+            const hPx = h + 'px';
+            const padPx = Math.round(h * 0.30) + 'px'; // 30% of height, same as 30vh
+            hero.style.setProperty('height', hPx, 'important');
+            hero.style.setProperty('min-height', hPx, 'important');
+            hero.style.setProperty('max-height', hPx, 'important');
+            hero.style.setProperty('padding-top', padPx, 'important');
+        } else {
+            hero.style.removeProperty('height');
+            hero.style.removeProperty('min-height');
+            hero.style.removeProperty('max-height');
+            hero.style.removeProperty('padding-top');
+        }
+    }
+
+    // Set immediately
+    setFixedHeight();
+
+    // Only recalculate on orientation change, NOT on scroll/resize
+    window.addEventListener('orientationchange', () => {
+        setTimeout(setFixedHeight, 200);
+    });
+})();
+
 // Mobile Menu Toggle
 const mobileMenu = document.getElementById('mobile-menu');
 const navMenu = document.querySelector('.nav-menu');

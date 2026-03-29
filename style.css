@@ -2157,13 +2157,28 @@ img {
         padding: 10px 25px;
     }
 
-    /* Increased height for mobile to push next section down */
+    /* Hero section for mobile — JS locks height to fixed px, these are fallbacks */
     .hero {
-        min-height: 115dvh;
-        /* Extend height to push next section down */
+        height: 100vh;
+        min-height: 100vh;
+        max-height: 100vh;
         align-items: flex-start;
-        padding-top: 35dvh;
-        /* Adjust padding to center content */
+        padding-top: 30vh;
+        background: none !important;
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(rgba(13, 71, 161, 0.85), rgba(0, 0, 0, 0.5)), url('images/hero-bg.jpg') center/cover no-repeat;
+        z-index: 0;
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
     }
 
     /* Fix Hero Content for Mobile */
