@@ -660,7 +660,7 @@ img {
 }
 
 .section-tag {
-    color: var(--primary-red);
+    color: #baa05a;
     font-weight: 700;
     font-size: 0.9rem;
     letter-spacing: 2px;
@@ -819,7 +819,7 @@ img {
     font-size: 0.85rem;
     white-space: nowrap;
     /* Prevent text wrapping */
-    letter-spacing: -0.01em;
+    letter-spacing: 1px;
     /* Slight tightening */
 }
 
@@ -3535,16 +3535,18 @@ img {
 
 @media (max-width: 768px) {
     .contact-hero {
-        padding: 100px 20px 60px 20px;
+        padding: 100px 20px 40px 20px;
     }
 
     .contact-hero-title {
-        font-size: 2.2rem;
+        font-size: 1.5rem;
         margin-bottom: 5px;
+        margin-left: -17px;
     }
 
     .contact-hero-subtitle {
-        font-size: 0.85rem;
+        font-size: 0.80rem;
+        margin-left: -17px;
     }
 
     .contact-form-card {
