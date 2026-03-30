@@ -30,11 +30,11 @@
 .timeline-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 60px 40px;
+    gap: 60px clamp(15px, 3vw, 40px);
     /* Restored horizontal gap for better spacing */
     margin-top: 120px;
-    margin-left: -80px;
-    /* Shifted the entire diagram to the left as requested */
+    margin-left: clamp(-110px, -8vw + 50px, -10px);
+    /* Fluid left shift to ensure consistency across all laptops and monitors */
     position: relative;
     width: 100%;
 }
@@ -79,14 +79,16 @@
 }
 
 .timeline-content h3 {
-    font-size: 0.75rem;
-    /* Reduced to fit long titles in one line */
+    font-size: clamp(0.70rem, 1.2vw, 0.75rem);
+    /* Slowly scale down text */
     color: var(--text-dark);
-    margin-bottom: 5px;
+    margin: 0 auto 5px auto;
     font-weight: 800;
     text-transform: uppercase;
-    white-space: nowrap;
-    /* Forced one line as requested */
+    white-space: normal;
+    /* Always safely wrap text to prevent overlapping, rather than forcing single lines */
+    max-width: 180px;
+    text-align: center;
     line-height: 1.4;
 }
 
@@ -782,36 +784,48 @@ img {
     font-weight: 800;
     font-size: 1.5rem;
     color: var(--primary-blue);
-    padding-left: 105px;
-    /* Fine-tuned alignment to the right */
-    /* Align with hero content 'S' */
+    padding-left: clamp(20px, 5vw, 100px);
+    /* Fluid padding so it matches both big and small screens seamlessly */
 }
 
 .logo-img {
     height: 150px;
+    margin-left: 20px;
     width: auto;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
 .nav-menu {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 70px;
-    /* Lebar ruang antar link diperbesar dan konsisten */
+    justify-content: center;
+    gap: clamp(15px, 3vw, 55px);
+    /* Fluid gap keeps distance perfect on all laptop sizes */
     flex: 1;
-    /* Memenuhi layar sebelah kiri ke kanan */
-    margin-left: 100px;
-    /* Jarak antara logo dan menu */
+    margin-left: 0;
     padding-right: 0;
 }
 
 @media (min-width: 1025px) {
+    .nav-menu .nav-item:first-child {
+        margin-left: auto;
+    }
+
     .nav-menu .nav-item:last-child {
         margin-left: auto;
-        /* Mendorong tombol ini khusus ke arah kanan */
-        margin-right: 130px;
+        margin-right: clamp(20px, 5vw, 80px);
     }
 }
+
+/* --- Responsive Adjustments untuk Layar Laptop / Notebook --- */
+@media (min-width: 1025px) and (max-width: 1250px) {
+    .nav-links {
+        font-size: 0.75rem;
+    }
+}
+
+/* ----------------------------------------------------------- */
 
 .nav-links {
     font-weight: 500;
