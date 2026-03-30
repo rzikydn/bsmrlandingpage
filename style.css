@@ -85,9 +85,8 @@
     margin: 0 auto 5px auto;
     font-weight: 800;
     text-transform: uppercase;
-    white-space: normal;
-    /* Always safely wrap text to prevent overlapping, rather than forcing single lines */
-    max-width: 180px;
+    white-space: nowrap;
+    /* User requested strictly 1 line formatting */
     text-align: center;
     line-height: 1.4;
 }
@@ -538,6 +537,9 @@
     .timeline-content h3 {
         white-space: normal;
         font-size: 0.9rem;
+        margin: 0 0 5px 0; /* Menempelkan teks lebih dekat ke angka sirkel bulat, alih-alih di tengah (auto) */
+        text-align: left; /* Teks harus diratakan ke kiri terhadap nomor urutan */
+        max-width: 170px; /* Batasi kelenturan garis teks mendadak supaya memaksanya patah turun menjadi 2 baris */
     }
 
     .timeline-number {
@@ -788,7 +790,8 @@ img {
 
 .logo-img {
     height: 150px;
-    margin-left: 0; /* Resetting forced margins since the container alignment is fixed */
+    margin-left: 0;
+    /* Resetting forced margins since the container alignment is fixed */
     width: auto;
     object-fit: contain;
     flex-shrink: 0;
