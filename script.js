@@ -151,16 +151,16 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // Navbar Scroll Effect
-window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    if (navbar) {
+const navbar = document.querySelector('.navbar');
+if (navbar) {
+    window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
             navbar.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
         } else {
             navbar.style.boxShadow = "0 2px 10px rgba(0,0,0,0.05)";
         }
-    }
-});
+    }, { passive: true }); // Adding passive true for better scrolling performance
+}
 
 // Read More Toggle (About)
 const readMoreBtn = document.getElementById('readMoreBtn');
