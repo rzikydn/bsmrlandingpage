@@ -537,9 +537,12 @@
     .timeline-content h3 {
         white-space: normal;
         font-size: 0.9rem;
-        margin: 0 0 5px 0; /* Menempelkan teks lebih dekat ke angka sirkel bulat, alih-alih di tengah (auto) */
-        text-align: left; /* Teks harus diratakan ke kiri terhadap nomor urutan */
-        max-width: 170px; /* Batasi kelenturan garis teks mendadak supaya memaksanya patah turun menjadi 2 baris */
+        margin: 0 0 5px 0;
+        /* Menempelkan teks lebih dekat ke angka sirkel bulat, alih-alih di tengah (auto) */
+        text-align: left;
+        /* Teks harus diratakan ke kiri terhadap nomor urutan */
+        max-width: 170px;
+        /* Batasi kelenturan garis teks mendadak supaya memaksanya patah turun menjadi 2 baris */
     }
 
     .timeline-number {
@@ -790,7 +793,7 @@ img {
 
 .logo-img {
     height: 150px;
-    margin-left: 0;
+    margin-left: -20px;
     /* Resetting forced margins since the container alignment is fixed */
     width: auto;
     object-fit: contain;
